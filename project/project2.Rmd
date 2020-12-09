@@ -1,0 +1,343 @@
+---
+title: "ProjectTwo"
+author: "Sara Morakabian"
+date: "11/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+###Sara Morakabian, sm69929
+
+#Introduction 
+```{r}
+library(tidyverse)
+library(dplyr)
+library(interactions)
+library(lmtest)
+library(Matrix)
+library(plotROC)
+library(sandwich)
+library(rstatix)
+library(glmnet)
+
+
+Video_Games <- read_csv("Video_Games.csv")
+videogames <- Video_Games %>% na.omit() %>% as.data.frame()
+videogames$User_Score <- as.numeric(videogames$User_Score)
+
+```
+*My dataset is a compilation of information regarding video game sales. The dataset, Video_Games, has 16,719 observations. When omitting the NA's, the project works with 6,947 obsrevations. The data has categorical information in columns with the video game's name, platform, year of release, genre, publisher, rating, and developer. The rating represents the minumum age a player is recommended to play the game, ranging from E for everyone, T for teen, M for mature, and other more specific ratings. The data has numeric information regarding sales in North America, Europe, Japan, worldwide, and other countries not in NA, EU, or JP. The sales are in millions. The dataset also gives numerical ratings of the game, with columns of critic score and user score, which are the aggregate scores compiled by Metacritic staff. These scores are scaled on Metacritic's scoring system, with user score ranging from 1-10 and critic score ranging from 1-100 in game greatness. Additonally, there is critic count and user count, which are the number of critics and users used in coming up with the score, respectively.*
+
+
+
+
+
+##MANOVA Testing
+```{r}
+
+#Assumptions
+group <- videogames$Genre 
+
+DVs <- videogames %>% select(NA_Sales, EU_Sales, JP_Sales, Global_Sales, Other_Sales, Critic_Score, Critic_Count, User_Count, User_Score)
+
+sapply(split(DVs,group), mshapiro_test)
+
+
+#MANOVA testing
+man1 <- manova(cbind(NA_Sales, EU_Sales, JP_Sales, Global_Sales,Other_Sales, Critic_Score, Critic_Count, User_Count, User_Score)~Genre, data=videogames)
+summary(man1) 
+
+#Univariate ANOVA
+summary.aov(man1) 
+
+#post-hoc t tests
+pairwise.t.test(videogames$NA_Sales, videogames$Genre, p.adj="none")$p.value*604<0.05
+sum(pairwise.t.test(videogames$NA_Sales, videogames$Genre, p.adj="none")$p.value*604<0.05, na.rm=T)
+
+pairwise.t.test(videogames$EU_Sales, videogames$Genre, p.adj="none")$p.value*604<0.05
+sum(pairwise.t.test(videogames$EU_Sales, videogames$Genre, p.adj="none")$p.value*604<0.05, na.rm=T)
+
+pairwise.t.test(videogames$JP_Sales, videogames$Genre, p.adj="none")$p.value*604<0.05
+sum(pairwise.t.test(videogames$JP_Sales, videogames$Genre, p.adj="none")$p.value*604<0.05, na.rm=T)
+
+pairwise.t.test(videogames$Other_Sales, videogames$Genre, p.adj="none")
+sum(pairwise.t.test(videogames$Other_Sales, videogames$Genre, p.adj="none")$p.value*604<0.05, na.rm=T)
+
+pairwise.t.test(videogames$Global_Sales, videogames$Genre, p.adj="none")
+sum(pairwise.t.test(videogames$Global_Sales, videogames$Genre, p.adj="none")$p.value*604<0.05, na.rm=T)
+
+pairwise.t.test(videogames$User_Count, videogames$Genre, p.adj="none")$p.value*604<0.05
+sum(pairwise.t.test(videogames$User_Count, videogames$Genre, p.adj="none")$p.value*604<0.05, na.rm=T)
+
+pairwise.t.test(videogames$User_Score, videogames$Genre, p.adj="none")$p.value*604<0.05
+sum(pairwise.t.test(videogames$User_Score, videogames$Genre, p.adj="none")$p.value*604<0.05, na.rm = T)
+
+pairwise.t.test(videogames$Critic_Score, videogames$Genre, p.adj="none")$p.value*604<0.05
+sum(pairwise.t.test(videogames$Critic_Score, videogames$Genre, p.adj="none")$p.value*604<0.05, na.rm=T)
+
+pairwise.t.test(videogames$Critic_Count, videogames$Genre, p.adj="none")$p.value*604<0.05
+sum(pairwise.t.test(videogames$Critic_Count, videogames$Genre, p.adj="none")$p.value*604<0.05, na.rm = T)
+
+```
+*The total number of tests performed is 604. This includes 1 MANOVA, 9 ANOVA's, and 594 post-hoc t tests. The probability of a Type I error is .999, calculated, by doing 1 - 0.95^604. This due to the number of tests performed which is steadily increasing the probability of a Type I error as the number of tests increase. To adjust for the significance level accordingly (Bonferroni Correction), I divided 0.05/604 and got 0.00008278 to use as our significance level. To test MANOVA assumptions to determine validity of the test, I tested multivariate normality of each group in the dataset. The resulting p-values of each group were all below 0.05, therefore the multivariate normality assumption was violated. Because the first assumption tested for was invalid, no further assumptions were necessary to test. We see a very tiny p-value in our MANOVA, which tells us for at least one of the 9 response variables, at least one genre is different. We ran a univariate ANOVA for each group to see if any of the groups are different. All of them were significant, before significance correction, which tells us at least one genre differs for all groups. The t-tests were ran to display all values significance with the adjusted significance level. Looking at the significance level after correction in the pairwise t-tests, we can see that with the minute significance value, the result of having significant differences in the variables is often less than half or a third in almost every t tests by every numeric variable. A distinct trend amongst the lack of significant differences was the trend in Japan's sales in which Role-Playing games were different across the chart. Another distinct trend is in the critic score, in which the Sports genre tends to be different across the chart.*
+
+
+##2. Perform some kind of randomization test on your data
+```{r}
+
+data <- videogames %>% mutate(y=ifelse(Rating=="E",1,0))
+data$y <- as.character(data$y)
+data %>% group_by(y) %>% summarize(mean(Global_Sales))
+  
+data%>%group_by(y)%>%
+  summarize(means=mean(Global_Sales))%>%summarize(`mean_diff`=diff(means)) 
+
+#then scramble data, and look at a histogram of those scrambled mean data
+
+rand_dist<-vector() #create vector to hold diffs under null hypothesis
+
+for(i in 1:5000){
+new<-data.frame(Sales=sample(data$Global_Sales),Rating=data$y) #scramble columns
+rand_dist[i]<-mean(new[new$Rating=="1",]$Sales)-   
+              mean(new[new$Rating=="0",]$Sales)} 
+
+
+{hist(rand_dist, xlim=c(-0.25, 0.25), main="",ylab=""); abline(v = c(-0.2324915, 0.2324915),col="red")}
+
+mean(rand_dist> 0.2324915 | rand_dist< -0.2324915) 
+
+```
+
+*Because I wanted to group a numeric variable, global sales, by a categorical, E vs. other rated games, I calculated the mean difference. The mean difference 0.232, which tells us the E rated games has a global sales on average of .232 more greater than the other games. The null hypothesis is that mean global sales is the same for E rated games vs. Non E rated games. The alternative hypothesis is that mean global sales is different for E rated games vs. Non E rated games. For the randomization test, once the rating no longer had an association with the global sales, we can see the histogram of 5000 mean differences from the scrambled up data. Looking at the true mean difference from our sample, we can see it does not look like a plausible value whatsoever in a world where there is no true association (our null hypothesis). Based on our two-talied test, the probability of getting a sample mean difference past our cutoffs is zero, so we can reject the null hypothesis that there is no association.* 
+ 
+
+ 
+
+
+
+
+##3. Build a linear regression model predicting one of your response variables from at least 2 other variables, including their interaction.
+```{r}
+
+
+videogames2 <- videogames
+
+#Mean-centering predictor variables 
+videogames2$Critic_Score_c <- videogames2$Critic_Score - mean(videogames2$Critic_Score )
+
+#Linear regression model
+
+fit<-lm(User_Count~Platform*Critic_Score_c, data= videogames2)
+summary(fit)
+
+#plot the regression
+videogames2 %>% 
+  ggplot(aes(User_Count, Critic_Score_c, fill= Platform, color = Platform)) + 
+  geom_smooth(method = "lm")
+
+#linearity
+
+resids<-fit$residuals
+fitvals<-fit$fitted.values
+
+data.frame(resids,fitvals)%>%ggplot(aes(fitvals,resids))+geom_point()+geom_hline(yintercept=0) #does not look linear.
+
+
+#homoskedasticity
+
+bptest(fit)
+
+
+#normality
+ggplot()+geom_histogram(aes(resids, bin=10))
+
+ggplot()+geom_qq(aes(sample=resids))+geom_qq()
+
+ks.test(resids, "pnorm", mean=0, sd(resids))
+
+
+# recompute regression results with robust standard errors
+coeftest(fit, vcov = vcovHC(fit))
+
+```
+
+*Highlighting a few of the coefficient estimates, the predicted user count of reviews for 3DS games with an average critic score is 117.96. PC games with an average critic score have a predicted user count of 329.419 higher than 3DS games with an average critic score. Xbox games with an average critic score have a predicted user count of 95.127 lower than 3DS games with an average critic score. The slope of critic score on the user count for PS4 games is 23.965 greater than for 3DS games. The slope of critic score on the user count for PC games is 34.698 greater than for 3DS games.For every 1 unit increase in critic score, predicted user count goes up by 7.37 for 3DS games. The assumptions for the linear regression model were violated across the board. Looking at the plot of resids and fitvals, the eyeballed linearity was not determined to be adequate enough to fit assumptions. Testing for homoskedasticity, the bptest gave a probability of less than 0.05, letting us know we have unequal variance. I used the ks.test to check for normality and this assumption was violated as well. The p-value says we can reject the null hypothesis of normality. The results of the coef test were expected to have greater standard errors due to penalizing our model after not meeting the assumption. Highlighting a few values and looking at the new standard errors, many previous unsignificant variables, such as Platform DC, DS, GBA, and GC, who's values were 41.617, 438.460, 48.30, 53.132, respectively, decreased in standard error and became significant. PC was significant and stayed significant, with a standard error of going from 47.32 to 38.204. Looking a significant interactive effect, PS4 and critic score, seemed to stay significant and increase in standard error as expected, going from 4.31 to 8.24. Critic score stayed significant while also decreasing in standard error. The unexpected decrease may have effects not known to the student. The proportion in the variation in the outcome that our model explains is 0.2343.*
+
+
+##4.) Rerun same regression model (with the interaction), but this time compute bootstrapped standard errors
+
+```{r}
+ fit<-lm(User_Count~Platform*Critic_Score_c,data= videogames2) 
+boot_dat<-videogames2 %>% sample_frac(replace=TRUE)
+
+samp_distn<-replicate(5000, {
+  boot_dat<-videogames2 %>% sample_frac(replace=TRUE)
+  fit<-lm(User_Count~Platform*Critic_Score_c, data=boot_dat)
+  coef(fit)
+})
+
+## Estimated SEs
+samp_distn%>%t%>%as.data.frame%>%summarize_all(sd)
+
+samp_distn %>% t %>% as.data.frame %>% pivot_longer(1:34) %>% group_by(name) %>%
+ summarize(lower=quantile(value,.025), upper=quantile(value,.975))
+```
+*Comparaing to the previous observed values, the values for Platform DC and DS increased, while GBA, GC, PC, critic score, and PS4 & critic score standard errors decreased. These values did not shift by more than a 1 unit increase, staying almost consistent. Using the 95% CI from our data, we can do hypothesis tests and ask if 0 is a plausible value. Highlighting some of the data, we can reject the hypothesis that the variable is not significant for variables such as critic score, platform DS, GBA, GC, PC, and the interaction between PS4 & critic score interaction.*
+
+
+##5. Logistic Regression Model Predicting a binary variable from at least 2 explanatory variables (no interaction)
+
+```{r}
+
+data <- videogames %>% mutate(y=ifelse(Rating=="E", 1 ,0))
+
+data$User_Score <- as.numeric(data$User_Score)
+
+#model
+fit2<-glm(y~Global_Sales+User_Score, family="binomial",  data=data)
+coeftest(fit2)
+exp(coef(fit2))
+
+
+#ACC, TPR, TNR, PPV, AUC & confusion matrix 
+
+probs<-predict(fit2,type="response") 
+pred<-ifelse(probs>.5,1,0)
+
+table(truth=data$y, prediction=pred)%>%addmargins
+
+class_diag<-function(probs,truth){
+  
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+  
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+  prediction<-ifelse(probs>.5,1,0)
+  acc=mean(truth==prediction)
+  sens=mean(prediction[truth==1]==1)
+  spec=mean(prediction[truth==0]==0)
+  ppv=mean(truth[prediction==1]==1)
+  f1=2*(sens*ppv)/(sens+ppv)
+
+  ord<-order(probs, decreasing=TRUE)
+  probs <- probs[ord]; truth <- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}
+
+class_diag(probs,data$y)
+
+
+#Logit density plot
+
+data$logit<-predict(fit2,type="link")
+
+data%>%ggplot()+geom_density(aes(logit,color=as.factor(y),fill=as.factor(y)), alpha=.4)+
+  theme(legend.position=c(.85,.85))+geom_vline(xintercept=0)+xlab("logit (log-odds)")+
+  geom_rug(aes(logit,color=as.factor(y)))
+
+
+
+#ROC curve and calculating AUC
+
+ROCplot <- ggplot(fit2) + geom_roc(aes(d=y, m=probs), n.cuts=0)
+ROCplot
+calc_auc(ROCplot)
+```
+
+*With a global sales and user score of zero, the odds of being an E rated game is 0.4666. For every 1 increase in global sales, the odds of being an E rated game is multiplied by 1.067. For every 1 increase in user score, the odds of being an E rated game is multiplied by 0.984. Out of 6,947 games, the classifier predicted 6,924 would be non-E rated games and 23 would be E-rated games. In reality, there are 2,118 E-rated games and 4,829 non-E rated games. Out of 6,947 games, the classifier predicted 6,924 would be non-E rated games and 23 would be E-rated games. In reality, there are 2,118 E-rated games and 4,829 non-E rated games. Overall, the proportion of the model that correctly classified games as E-rated or non-E-rated was 0.695 based on the class diag accuracy output.Out of every game that is actually rated E, the proportion of our model that is flagging those games as rated E is 0.00613, based on our sensitivity value in the class diag output. Out of every game that is actually a non-E-rated game, the proportion of our model that is flagging those games correctly is 0.997, based on our specificity value in the class diag output. Out of all of the values that our matrix is classifying as E-rated games, the proportion of those that are actually E-rated games are 0.565 based on the precision value in our class diag output. The ROC plot does represent a perfect world and shows almost a completely random prediction. The AUC is bad.*
+
+##6. Logistic regression predicting the same binary response variable from ALL of the rest of your variables 
+
+```{r}
+
+potato <- sample_n(videogames, 4000)
+
+sad2 <- potato %>% select(Critic_Count, Critic_Score, User_Count, User_Score, Rating)
+gamerr<- sad2 %>% mutate(y=ifelse(Rating=="E", 1 ,0))
+gamerr$Rating<-NULL 
+
+fit6 <- glm(y~., data=gamerr, family="binomial")
+probs<-predict(fit6,type="response") 
+class_diag(probs, gamerr$y)
+
+
+
+
+## k-fold CV
+set.seed(1234)
+k=10 #choose number of folds
+
+data <-gamerr[sample(nrow(gamerr)),] #randomly order rows
+folds<-cut(seq(1:nrow(gamerr)),breaks=k,labels=F) #create folds
+
+diags<-NULL
+for(i in 1:k){
+  ## Create training and test sets
+  train<-data[folds!=i,] 
+  test<-data[folds==i,]
+  
+  truth<-test$y ## Truth labels for fold i
+  
+  ## Train model on training set (all but fold i)
+  fit<-glm(y~.,data=train,family="binomial")
+  
+  ## Test model on test set (fold i) 
+  probs<-predict(fit,newdata = test,type="response")
+  
+  ## Get diagnostics for fold i
+  diags<-rbind(diags,class_diag(probs,truth))
+}
+summarize_all(diags,mean) #average diagnostics across all k folds
+
+
+
+#Lasso
+y<-as.matrix(gamerr$y) #grab response
+x<-model.matrix(y~.,data=gamerr)[,-1]
+head(x)
+
+cv<-cv.glmnet(x,y,family="binomial")
+lasso<-glmnet(x,y,family="binomial",lambda=cv$lambda.1se)
+coef(lasso)
+
+
+
+#cross-validating lasso model
+set.seed(1234)
+k=10
+
+dva <- gamerr %>% sample_frac #put rows of dataset in random order
+folds <- ntile(1:nrow(gamerr),n=10) #create fold labels
+
+diags <-NULL
+for(i in 1:k){
+  train <- dva[folds!=i,] #create training set (all but fold i)
+  test <- dva[folds==i,] #create test set (just fold i)
+  truth <- test$y #save truth labels from fold i
+  
+  fit <- glm(y~Critic_Count + Critic_Score + User_Count, 
+             data=train, family="binomial")
+  probs <- predict(fit, newdata=test, type="response")
+  
+  diags<-rbind(diags,class_diag(probs,truth))
+}
+summarize_all(diags,mean)
+
+
+
+```
+*The model was calculated at 50% of the original length and with columns of interest in order to preserve Sara's computer processing power from setting on fire.For the in-sample fit model, we can look at the classification diagnostics and have more information about the model. Overall, the proportion of the model that correctly classified games as E-rated or non-E-rated was 0.708, based on the class diag accuracy output. Out of every game that is actually rated E, the proportion of our model that is flagging those games as rated E is 0.126, based on our sensitivity value in the class diag output. Out of every game that is actually a non-E-rated game, the proportion of our model that is flagging those games correctly is 0.961, based on our specificity value in the class diag output. Out of all of the values that our matrix is classifying as E-rated games, the proportion of those that are actually E-rated games are 0.590 based on the precision value in our class diag output. The AUC is 0.694, which tells us this model is poor, almost fair in predicting TPR and FPR! For the average out-of-sample classification diagnostics, the values differed slightly but did not have any improvment. While the values would represent a similar ROC curve and hold the same meaning in interpretation (see above paragraph), the new accuraciy, sensitivity, specificity, and precision of 0.704, 0.122, 0.958, and 0.574, respectively, still are not part of a good model. The decreased AUC of 0.693 also represents a poor, almost fair model, more random than the the in-sample. The LASSO model's finest lambda that meets the best requirements retains the variables Crtic_Count, User_Score, and Critic_Score. Comparing the model's out of sample AUC to that to that of the logistic regressions above, while the AUC decreased by 0.0002 to 0.692, it was not enough to say the cross-validating lasso model made the AUC much less predictable than it already was at, which is a poor, almost fair value, in which we will see most ROC curves let us know predictions will happen almost randomly.*

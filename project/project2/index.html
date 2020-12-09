@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Sara Morakabian" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
+    <title>ProjectTwo</title>
+    <meta name="generator" content="Hugo 0.79.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../../post/">BLOG</a></li>
+        
+        <li><a href="../../projects/">PROJECTS</a></li>
+        
+        <li><a href="../../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../../project/project2/">ProjectTwo</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         January 1, 0001 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="r-markdown" class="section level2">
+<h2>R Markdown</h2>
+<div id="sara-morakabian-sm69929" class="section level3">
+<h3>Sara Morakabian, sm69929</h3>
+</div>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ──────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
+## ✓ tibble  3.0.3     ✓ dplyr   1.0.1
+## ✓ tidyr   1.1.1     ✓ stringr 1.4.0
+## ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
+<pre><code>## ── Conflicts ─────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(dplyr)
+library(interactions)
+library(lmtest)</code></pre>
+<pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre class="r"><code>library(Matrix)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;Matrix&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:tidyr&#39;:
+## 
+##     expand, pack, unpack</code></pre>
+<pre class="r"><code>library(plotROC)
+library(sandwich)
+library(rstatix)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;rstatix&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre class="r"><code>library(glmnet)</code></pre>
+<pre><code>## Loaded glmnet 4.0-2</code></pre>
+<pre class="r"><code>Video_Games &lt;- read_csv(&quot;Video_Games.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Name = col_character(),
+##   Platform = col_character(),
+##   Year_of_Release = col_character(),
+##   Genre = col_character(),
+##   Publisher = col_character(),
+##   NA_Sales = col_double(),
+##   EU_Sales = col_double(),
+##   JP_Sales = col_double(),
+##   Other_Sales = col_double(),
+##   Global_Sales = col_double(),
+##   Critic_Score = col_double(),
+##   Critic_Count = col_double(),
+##   User_Score = col_character(),
+##   User_Count = col_double(),
+##   Developer = col_character(),
+##   Rating = col_character()
+## )</code></pre>
+<pre class="r"><code>videogames &lt;- Video_Games %&gt;% na.omit() %&gt;% as.data.frame()
+videogames$User_Score &lt;- as.numeric(videogames$User_Score)</code></pre>
+<p><em>My dataset is a compilation of information regarding video game sales. The dataset, Video_Games, has 16,719 observations. When omitting the NA's, the project works with 6,947 obsrevations. The data has categorical information in columns with the video game's name, platform, year of release, genre, publisher, rating, and developer. The rating represents the minumum age a player is recommended to play the game, ranging from E for everyone, T for teen, M for mature, and other more specific ratings. The data has numeric information regarding sales in North America, Europe, Japan, worldwide, and other countries not in NA, EU, or JP. The sales are in millions. The dataset also gives numerical ratings of the game, with columns of critic score and user score, which are the aggregate scores compiled by Metacritic staff. These scores are scaled on Metacritic's scoring system, with user score ranging from 1-10 and critic score ranging from 1-100 in game greatness. Additonally, there is critic count and user count, which are the number of critics and users used in coming up with the score, respectively.</em></p>
+<div id="manova-testing" class="section level2">
+<h2>MANOVA Testing</h2>
+<pre class="r"><code>#Assumptions
+group &lt;- videogames$Genre 
+
+DVs &lt;- videogames %&gt;% select(NA_Sales, EU_Sales, JP_Sales, Global_Sales, Other_Sales, Critic_Score, Critic_Count, User_Count, User_Score)
+
+sapply(split(DVs,group), mshapiro_test)</code></pre>
+<pre><code>##           Action       Adventure    Fighting     Misc         Platform    
+## statistic 0.09282215   0.4776167    0.4124906    0.4051434    0.3236032   
+## p.value   1.077487e-66 1.875523e-26 2.311231e-33 5.906894e-34 4.556797e-36
+##           Puzzle       Racing       Role-Playing Shooter      Simulation  
+## statistic 0.2714648    0.09362508   0.2954617    0.293423     0.3777955   
+## p.value   7.026181e-22 3.534848e-46 8.789604e-46 1.647988e-49 8.285139e-31
+##           Sports       Strategy    
+## statistic 0.2068771    0.4587354   
+## p.value   4.569976e-53 5.267506e-28</code></pre>
+<pre class="r"><code>#MANOVA testing
+man1 &lt;- manova(cbind(NA_Sales, EU_Sales, JP_Sales, Global_Sales,Other_Sales, Critic_Score, Critic_Count, User_Count, User_Score)~Genre, data=videogames)
+summary(man1) </code></pre>
+<pre><code>##             Df  Pillai approx F num Df den Df    Pr(&gt;F)    
+## Genre       11 0.21921   15.739     99  62415 &lt; 2.2e-16 ***
+## Residuals 6935                                             
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>#Univariate ANOVA
+summary.aov(man1) </code></pre>
+<pre><code>##  Response NA_Sales :
+##               Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Genre         11   82.2  7.4755  8.1839 2.087e-14 ***
+## Residuals   6935 6334.6  0.9134                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response EU_Sales :
+##               Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Genre         11   23.9 2.16997  4.6886 3.476e-07 ***
+## Residuals   6935 3209.7 0.46282                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response JP_Sales :
+##               Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Genre         11   13.7 1.24572  15.665 &lt; 2.2e-16 ***
+## Residuals   6935  551.5 0.07952                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response Global_Sales :
+##               Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Genre         11   219.7 19.9771  5.2955 2.135e-08 ***
+## Residuals   6935 26162.2  3.7725                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response Other_Sales :
+##               Df Sum Sq  Mean Sq F value    Pr(&gt;F)    
+## Genre         11   3.47 0.315055  4.4157 1.194e-06 ***
+## Residuals   6935 494.80 0.071348                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response Critic_Score :
+##               Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Genre         11   39341  3576.5  19.071 &lt; 2.2e-16 ***
+## Residuals   6935 1300557   187.5                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response Critic_Count :
+##               Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Genre         11  131348 11940.7  34.105 &lt; 2.2e-16 ***
+## Residuals   6935 2428087   350.1                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response User_Count :
+##               Df     Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Genre         11  100772765 9161160  27.959 &lt; 2.2e-16 ***
+## Residuals   6935 2272356550  327665                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response User_Score :
+##               Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Genre         11   233.9 21.2632  10.378 &lt; 2.2e-16 ***
+## Residuals   6935 14209.4  2.0489                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>#post-hoc t tests
+pairwise.t.test(videogames$NA_Sales, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05</code></pre>
+<pre><code>##              Action Adventure Fighting  Misc Platform Puzzle Racing
+## Adventure     FALSE        NA       NA    NA       NA     NA     NA
+## Fighting      FALSE     FALSE       NA    NA       NA     NA     NA
+## Misc           TRUE      TRUE    FALSE    NA       NA     NA     NA
+## Platform      FALSE      TRUE    FALSE FALSE       NA     NA     NA
+## Puzzle        FALSE     FALSE    FALSE FALSE    FALSE     NA     NA
+## Racing        FALSE     FALSE    FALSE FALSE    FALSE  FALSE     NA
+## Role-Playing  FALSE     FALSE    FALSE  TRUE    FALSE  FALSE  FALSE
+## Shooter       FALSE      TRUE    FALSE FALSE    FALSE  FALSE  FALSE
+## Simulation    FALSE     FALSE    FALSE FALSE    FALSE  FALSE  FALSE
+## Sports        FALSE      TRUE    FALSE FALSE    FALSE  FALSE  FALSE
+## Strategy      FALSE     FALSE    FALSE  TRUE     TRUE  FALSE  FALSE
+##              Role-Playing Shooter Simulation Sports
+## Adventure              NA      NA         NA     NA
+## Fighting               NA      NA         NA     NA
+## Misc                   NA      NA         NA     NA
+## Platform               NA      NA         NA     NA
+## Puzzle                 NA      NA         NA     NA
+## Racing                 NA      NA         NA     NA
+## Role-Playing           NA      NA         NA     NA
+## Shooter              TRUE      NA         NA     NA
+## Simulation          FALSE   FALSE         NA     NA
+## Sports              FALSE   FALSE      FALSE     NA
+## Strategy            FALSE    TRUE      FALSE   TRUE</code></pre>
+<pre class="r"><code>sum(pairwise.t.test(videogames$NA_Sales, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05, na.rm=T)</code></pre>
+<pre><code>## [1] 11</code></pre>
+<pre class="r"><code>pairwise.t.test(videogames$EU_Sales, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05</code></pre>
+<pre><code>##              Action Adventure Fighting  Misc Platform Puzzle Racing
+## Adventure     FALSE        NA       NA    NA       NA     NA     NA
+## Fighting      FALSE     FALSE       NA    NA       NA     NA     NA
+## Misc          FALSE     FALSE    FALSE    NA       NA     NA     NA
+## Platform      FALSE     FALSE    FALSE FALSE       NA     NA     NA
+## Puzzle        FALSE     FALSE    FALSE FALSE    FALSE     NA     NA
+## Racing        FALSE     FALSE    FALSE FALSE    FALSE  FALSE     NA
+## Role-Playing  FALSE     FALSE    FALSE FALSE    FALSE  FALSE  FALSE
+## Shooter       FALSE      TRUE    FALSE FALSE    FALSE  FALSE  FALSE
+## Simulation    FALSE     FALSE    FALSE FALSE    FALSE  FALSE  FALSE
+## Sports        FALSE     FALSE    FALSE FALSE    FALSE  FALSE  FALSE
+## Strategy      FALSE     FALSE    FALSE  TRUE    FALSE  FALSE  FALSE
+##              Role-Playing Shooter Simulation Sports
+## Adventure              NA      NA         NA     NA
+## Fighting               NA      NA         NA     NA
+## Misc                   NA      NA         NA     NA
+## Platform               NA      NA         NA     NA
+## Puzzle                 NA      NA         NA     NA
+## Racing                 NA      NA         NA     NA
+## Role-Playing           NA      NA         NA     NA
+## Shooter             FALSE      NA         NA     NA
+## Simulation          FALSE   FALSE         NA     NA
+## Sports              FALSE   FALSE      FALSE     NA
+## Strategy            FALSE    TRUE      FALSE  FALSE</code></pre>
+<pre class="r"><code>sum(pairwise.t.test(videogames$EU_Sales, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05, na.rm=T)</code></pre>
+<pre><code>## [1] 3</code></pre>
+<pre class="r"><code>pairwise.t.test(videogames$JP_Sales, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05</code></pre>
+<pre><code>##              Action Adventure Fighting  Misc Platform Puzzle Racing
+## Adventure     FALSE        NA       NA    NA       NA     NA     NA
+## Fighting      FALSE     FALSE       NA    NA       NA     NA     NA
+## Misc          FALSE     FALSE    FALSE    NA       NA     NA     NA
+## Platform      FALSE     FALSE    FALSE FALSE       NA     NA     NA
+## Puzzle        FALSE     FALSE    FALSE FALSE    FALSE     NA     NA
+## Racing        FALSE     FALSE    FALSE FALSE    FALSE  FALSE     NA
+## Role-Playing   TRUE      TRUE     TRUE  TRUE    FALSE  FALSE   TRUE
+## Shooter       FALSE     FALSE    FALSE FALSE     TRUE  FALSE  FALSE
+## Simulation    FALSE     FALSE    FALSE FALSE    FALSE  FALSE  FALSE
+## Sports        FALSE     FALSE    FALSE FALSE     TRUE  FALSE  FALSE
+## Strategy      FALSE     FALSE    FALSE FALSE     TRUE  FALSE  FALSE
+##              Role-Playing Shooter Simulation Sports
+## Adventure              NA      NA         NA     NA
+## Fighting               NA      NA         NA     NA
+## Misc                   NA      NA         NA     NA
+## Platform               NA      NA         NA     NA
+## Puzzle                 NA      NA         NA     NA
+## Racing                 NA      NA         NA     NA
+## Role-Playing           NA      NA         NA     NA
+## Shooter              TRUE      NA         NA     NA
+## Simulation           TRUE   FALSE         NA     NA
+## Sports               TRUE   FALSE      FALSE     NA
+## Strategy             TRUE   FALSE      FALSE  FALSE</code></pre>
+<pre class="r"><code>sum(pairwise.t.test(videogames$JP_Sales, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05, na.rm=T)</code></pre>
+<pre><code>## [1] 12</code></pre>
+<pre class="r"><code>pairwise.t.test(videogames$Other_Sales, videogames$Genre, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  videogames$Other_Sales and videogames$Genre 
+## 
+##              Action  Adventure Fighting Misc    Platform Puzzle  Racing 
+## Adventure    0.00152 -         -        -       -        -       -      
+## Fighting     0.11388 0.12225   -        -       -        -       -      
+## Misc         0.30600 0.00075   0.04058  -       -        -       -      
+## Platform     0.50132 0.02662   0.46096  0.18102 -        -       -      
+## Puzzle       0.13709 0.49516   0.62977  0.05762 0.32077  -       -      
+## Racing       0.45848 0.00089   0.05652  0.73687 0.25913  0.07864 -      
+## Role-Playing 0.00500 0.22007   0.57310  0.00357 0.15516  0.88188 0.00378
+## Shooter      0.34452 0.00038   0.03510  0.76667 0.20139  0.06431 0.94192
+## Simulation   0.05035 0.27771   0.66957  0.01876 0.26124  0.87160 0.02559
+## Sports       0.38718 0.00043   0.03915  0.70837 0.22201  0.06963 0.99223
+## Strategy     0.00017 0.73615   0.04971  0.00012 0.00782  0.33565 0.00012
+##              Role-Playing Shooter Simulation Sports 
+## Adventure    -            -       -          -      
+## Fighting     -            -       -          -      
+## Misc         -            -       -          -      
+## Platform     -            -       -          -      
+## Puzzle       -            -       -          -      
+## Racing       -            -       -          -      
+## Role-Playing -            -       -          -      
+## Shooter      0.00105      -       -          -      
+## Simulation   0.96752      0.01527 -          -      
+## Sports       0.00114      0.92506 0.01701    -      
+## Strategy     0.09190      3.9e-05 0.14240    4.3e-05
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>sum(pairwise.t.test(videogames$Other_Sales, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05, na.rm=T)</code></pre>
+<pre><code>## [1] 2</code></pre>
+<pre class="r"><code>pairwise.t.test(videogames$Global_Sales, videogames$Genre, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  videogames$Global_Sales and videogames$Genre 
+## 
+##              Action  Adventure Fighting Misc    Platform Puzzle  Racing 
+## Adventure    0.00185 -         -        -       -        -       -      
+## Fighting     0.47261 0.03588   -        -       -        -       -      
+## Misc         0.00170 1.7e-06   0.00256  -       -        -       -      
+## Platform     0.07061 0.00011   0.04821  0.28289 -        -       -      
+## Puzzle       0.65798 0.12507   0.99286  0.03634 0.17124  -       -      
+## Racing       0.41543 0.00091   0.22446  0.03534 0.34368  0.41875 -      
+## Role-Playing 0.68664 0.00847   0.71958  0.00199 0.05721  0.80966 0.30465
+## Shooter      0.01445 1.3e-05   0.01988  0.22209 0.97460  0.13860 0.23671
+## Simulation   0.62223 0.03482   0.89790  0.00693 0.08522  0.91991 0.32386
+## Sports       0.06433 5.6e-05   0.05582  0.09110 0.67074  0.22686 0.49229
+## Strategy     0.00017 0.69891   0.00970  8.7e-08 9.9e-06  0.06184 1.0e-04
+##              Role-Playing Shooter Simulation Sports 
+## Adventure    -            -       -          -      
+## Fighting     -            -       -          -      
+## Misc         -            -       -          -      
+## Platform     -            -       -          -      
+## Puzzle       -            -       -          -      
+## Racing       -            -       -          -      
+## Role-Playing -            -       -          -      
+## Shooter      0.01707      -       -          -      
+## Simulation   0.85158      0.04674 -          -      
+## Sports       0.05952      0.56168 0.10930    -      
+## Strategy     0.00136      5.2e-07 0.01016    2.9e-06
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>sum(pairwise.t.test(videogames$Global_Sales, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05, na.rm=T)</code></pre>
+<pre><code>## [1] 7</code></pre>
+<pre class="r"><code>pairwise.t.test(videogames$User_Count, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05</code></pre>
+<pre><code>##              Action Adventure Fighting  Misc Platform Puzzle Racing
+## Adventure     FALSE        NA       NA    NA       NA     NA     NA
+## Fighting       TRUE     FALSE       NA    NA       NA     NA     NA
+## Misc           TRUE     FALSE    FALSE    NA       NA     NA     NA
+## Platform      FALSE     FALSE    FALSE FALSE       NA     NA     NA
+## Puzzle        FALSE     FALSE    FALSE FALSE    FALSE     NA     NA
+## Racing         TRUE     FALSE    FALSE FALSE    FALSE  FALSE     NA
+## Role-Playing   TRUE      TRUE     TRUE  TRUE     TRUE   TRUE   TRUE
+## Shooter        TRUE      TRUE     TRUE  TRUE     TRUE   TRUE   TRUE
+## Simulation    FALSE     FALSE    FALSE FALSE    FALSE  FALSE  FALSE
+## Sports         TRUE     FALSE    FALSE FALSE    FALSE  FALSE  FALSE
+## Strategy      FALSE     FALSE    FALSE  TRUE    FALSE  FALSE  FALSE
+##              Role-Playing Shooter Simulation Sports
+## Adventure              NA      NA         NA     NA
+## Fighting               NA      NA         NA     NA
+## Misc                   NA      NA         NA     NA
+## Platform               NA      NA         NA     NA
+## Puzzle                 NA      NA         NA     NA
+## Racing                 NA      NA         NA     NA
+## Role-Playing           NA      NA         NA     NA
+## Shooter             FALSE      NA         NA     NA
+## Simulation           TRUE    TRUE         NA     NA
+## Sports               TRUE    TRUE      FALSE     NA
+## Strategy            FALSE    TRUE      FALSE   TRUE</code></pre>
+<pre class="r"><code>sum(pairwise.t.test(videogames$User_Count, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05, na.rm=T)</code></pre>
+<pre><code>## [1] 25</code></pre>
+<pre class="r"><code>pairwise.t.test(videogames$User_Score, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05</code></pre>
+<pre><code>##              Action Adventure Fighting  Misc Platform Puzzle Racing
+## Adventure     FALSE        NA       NA    NA       NA     NA     NA
+## Fighting      FALSE     FALSE       NA    NA       NA     NA     NA
+## Misc          FALSE     FALSE     TRUE    NA       NA     NA     NA
+## Platform      FALSE     FALSE    FALSE  TRUE       NA     NA     NA
+## Puzzle        FALSE     FALSE    FALSE FALSE    FALSE     NA     NA
+## Racing        FALSE     FALSE    FALSE FALSE    FALSE  FALSE     NA
+## Role-Playing   TRUE      TRUE    FALSE  TRUE    FALSE  FALSE   TRUE
+## Shooter       FALSE     FALSE    FALSE FALSE    FALSE  FALSE  FALSE
+## Simulation    FALSE     FALSE    FALSE FALSE    FALSE  FALSE  FALSE
+## Sports        FALSE     FALSE    FALSE FALSE    FALSE  FALSE  FALSE
+## Strategy      FALSE     FALSE    FALSE  TRUE    FALSE  FALSE  FALSE
+##              Role-Playing Shooter Simulation Sports
+## Adventure              NA      NA         NA     NA
+## Fighting               NA      NA         NA     NA
+## Misc                   NA      NA         NA     NA
+## Platform               NA      NA         NA     NA
+## Puzzle                 NA      NA         NA     NA
+## Racing                 NA      NA         NA     NA
+## Role-Playing           NA      NA         NA     NA
+## Shooter              TRUE      NA         NA     NA
+## Simulation           TRUE   FALSE         NA     NA
+## Sports               TRUE   FALSE      FALSE     NA
+## Strategy            FALSE   FALSE      FALSE  FALSE</code></pre>
+<pre class="r"><code>sum(pairwise.t.test(videogames$User_Score, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05, na.rm = T)</code></pre>
+<pre><code>## [1] 10</code></pre>
+<pre class="r"><code>pairwise.t.test(videogames$Critic_Score, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05</code></pre>
+<pre><code>##              Action Adventure Fighting  Misc Platform Puzzle Racing
+## Adventure     FALSE        NA       NA    NA       NA     NA     NA
+## Fighting      FALSE     FALSE       NA    NA       NA     NA     NA
+## Misc          FALSE     FALSE    FALSE    NA       NA     NA     NA
+## Platform      FALSE     FALSE    FALSE FALSE       NA     NA     NA
+## Puzzle        FALSE     FALSE    FALSE FALSE    FALSE     NA     NA
+## Racing        FALSE     FALSE    FALSE FALSE    FALSE  FALSE     NA
+## Role-Playing   TRUE      TRUE    FALSE  TRUE    FALSE  FALSE   TRUE
+## Shooter        TRUE      TRUE    FALSE  TRUE    FALSE  FALSE  FALSE
+## Simulation    FALSE     FALSE    FALSE FALSE    FALSE  FALSE  FALSE
+## Sports         TRUE      TRUE     TRUE  TRUE     TRUE  FALSE   TRUE
+## Strategy       TRUE      TRUE    FALSE  TRUE    FALSE  FALSE  FALSE
+##              Role-Playing Shooter Simulation Sports
+## Adventure              NA      NA         NA     NA
+## Fighting               NA      NA         NA     NA
+## Misc                   NA      NA         NA     NA
+## Platform               NA      NA         NA     NA
+## Puzzle                 NA      NA         NA     NA
+## Racing                 NA      NA         NA     NA
+## Role-Playing           NA      NA         NA     NA
+## Shooter             FALSE      NA         NA     NA
+## Simulation          FALSE   FALSE         NA     NA
+## Sports              FALSE    TRUE       TRUE     NA
+## Strategy            FALSE   FALSE      FALSE  FALSE</code></pre>
+<pre class="r"><code>sum(pairwise.t.test(videogames$Critic_Score, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05, na.rm=T)</code></pre>
+<pre><code>## [1] 18</code></pre>
+<pre class="r"><code>pairwise.t.test(videogames$Critic_Count, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05</code></pre>
+<pre><code>##              Action Adventure Fighting  Misc Platform Puzzle Racing
+## Adventure      TRUE        NA       NA    NA       NA     NA     NA
+## Fighting      FALSE     FALSE       NA    NA       NA     NA     NA
+## Misc           TRUE     FALSE    FALSE    NA       NA     NA     NA
+## Platform      FALSE     FALSE    FALSE FALSE       NA     NA     NA
+## Puzzle        FALSE     FALSE    FALSE FALSE    FALSE     NA     NA
+## Racing         TRUE     FALSE    FALSE FALSE    FALSE  FALSE     NA
+## Role-Playing  FALSE      TRUE    FALSE  TRUE     TRUE  FALSE   TRUE
+## Shooter        TRUE      TRUE     TRUE  TRUE     TRUE   TRUE   TRUE
+## Simulation     TRUE     FALSE    FALSE FALSE    FALSE  FALSE  FALSE
+## Sports         TRUE     FALSE     TRUE FALSE    FALSE  FALSE  FALSE
+## Strategy      FALSE     FALSE    FALSE FALSE    FALSE  FALSE  FALSE
+##              Role-Playing Shooter Simulation Sports
+## Adventure              NA      NA         NA     NA
+## Fighting               NA      NA         NA     NA
+## Misc                   NA      NA         NA     NA
+## Platform               NA      NA         NA     NA
+## Puzzle                 NA      NA         NA     NA
+## Racing                 NA      NA         NA     NA
+## Role-Playing           NA      NA         NA     NA
+## Shooter              TRUE      NA         NA     NA
+## Simulation           TRUE    TRUE         NA     NA
+## Sports               TRUE    TRUE      FALSE     NA
+## Strategy            FALSE    TRUE      FALSE   TRUE</code></pre>
+<pre class="r"><code>sum(pairwise.t.test(videogames$Critic_Count, videogames$Genre, p.adj=&quot;none&quot;)$p.value*604&lt;0.05, na.rm = T)</code></pre>
+<pre><code>## [1] 24</code></pre>
+<p><em>The total number of tests performed is 604. This includes 1 MANOVA, 9 ANOVA's, and 594 post-hoc t tests. The probability of a Type I error is .999, calculated, by doing 1 - 0.95^604. This due to the number of tests performed which is steadily increasing the probability of a Type I error as the number of tests increase. To adjust for the significance level accordingly (Bonferroni Correction), I divided 0.05/604 and got 0.00008278 to use as our significance level. To test MANOVA assumptions to determine validity of the test, I tested multivariate normality of each group in the dataset. The resulting p-values of each group were all below 0.05, therefore the multivariate normality assumption was violated. Because the first assumption tested for was invalid, no further assumptions were necessary to test. We see a very tiny p-value in our MANOVA, which tells us for at least one of the 9 response variables, at least one genre is different. We ran a univariate ANOVA for each group to see if any of the groups are different. All of them were significant, before significance correction, which tells us at least one genre differs for all groups. The t-tests were ran to display all values significance with the adjusted significance level. Looking at the significance level after correction in the pairwise t-tests, we can see that with the minute significance value, the result of having significant differences in the variables is often less than half or a third in almost every t tests by every numeric variable. A distinct trend amongst the lack of significant differences was the trend in Japan's sales in which Role-Playing games were different across the chart. Another distinct trend is in the critic score, in which the Sports genre tends to be different across the chart.</em></p>
+</div>
+<div id="perform-some-kind-of-randomization-test-on-your-data" class="section level2">
+<h2>2. Perform some kind of randomization test on your data</h2>
+<pre class="r"><code>data &lt;- videogames %&gt;% mutate(y=ifelse(Rating==&quot;E&quot;,1,0))
+data$y &lt;- as.character(data$y)
+data %&gt;% group_by(y) %&gt;% summarize(mean(Global_Sales))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   y     `mean(Global_Sales)`
+##   &lt;chr&gt;                &lt;dbl&gt;
+## 1 0                    0.702
+## 2 1                    0.935</code></pre>
+<pre class="r"><code>data%&gt;%group_by(y)%&gt;%
+  summarize(means=mean(Global_Sales))%&gt;%summarize(`mean_diff`=diff(means)) </code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   mean_diff
+##       &lt;dbl&gt;
+## 1     0.232</code></pre>
+<pre class="r"><code>#then scramble data, and look at a histogram of those scrambled mean data
+
+rand_dist&lt;-vector() #create vector to hold diffs under null hypothesis
+
+for(i in 1:5000){
+new&lt;-data.frame(Sales=sample(data$Global_Sales),Rating=data$y) #scramble columns
+rand_dist[i]&lt;-mean(new[new$Rating==&quot;1&quot;,]$Sales)-   
+              mean(new[new$Rating==&quot;0&quot;,]$Sales)} 
+
+
+{hist(rand_dist, xlim=c(-0.25, 0.25), main=&quot;&quot;,ylab=&quot;&quot;); abline(v = c(-0.2324915, 0.2324915),col=&quot;red&quot;)}</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>mean(rand_dist&gt; 0.2324915 | rand_dist&lt; -0.2324915) </code></pre>
+<pre><code>## [1] 0</code></pre>
+<p><em>Because I wanted to group a numeric variable, global sales, by a categorical, E vs. other rated games, I calculated the mean difference. The mean difference 0.232, which tells us the E rated games has a global sales on average of .232 more greater than the other games. The null hypothesis is that mean global sales is the same for E rated games vs. Non E rated games. The alternative hypothesis is that mean global sales is different for E rated games vs. Non E rated games. For the randomization test, once the rating no longer had an association with the global sales, we can see the histogram of 5000 mean differences from the scrambled up data. Looking at the true mean difference from our sample, we can see it does not look like a plausible value whatsoever in a world where there is no true association (our null hypothesis). Based on our two-talied test, the probability of getting a sample mean difference past our cutoffs is zero, so we can reject the null hypothesis that there is no association.</em></p>
+</div>
+<div id="build-a-linear-regression-model-predicting-one-of-your-response-variables-from-at-least-2-other-variables-including-their-interaction." class="section level2">
+<h2>3. Build a linear regression model predicting one of your response variables from at least 2 other variables, including their interaction.</h2>
+<pre class="r"><code>videogames2 &lt;- videogames
+
+#Mean-centering predictor variables 
+videogames2$Critic_Score_c &lt;- videogames2$Critic_Score - mean(videogames2$Critic_Score )
+
+#Linear regression model
+
+fit&lt;-lm(User_Count~Platform*Critic_Score_c, data= videogames2)
+summary(fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = User_Count ~ Platform * Critic_Score_c, data = videogames2)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1284.9   -92.9   -21.6    15.9  9261.0 
+## 
+## Coefficients:
+##                              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                  117.9652    41.6177   2.834  0.00460 ** 
+## PlatformDC                  -161.3762   438.4608  -0.368  0.71285    
+## PlatformDS                   -81.8152    48.3040  -1.694  0.09036 .  
+## PlatformGBA                  -94.4021    53.1323  -1.777  0.07566 .  
+## PlatformGC                   -83.2157    49.7308  -1.673  0.09431 .  
+## PlatformPC                   329.4199    47.3283   6.960 3.71e-12 ***
+## PlatformPS                   -53.5866    59.4172  -0.902  0.36716    
+## PlatformPS2                  -69.9911    44.2626  -1.581  0.11386    
+## PlatformPS3                   97.5658    45.4793   2.145  0.03197 *  
+## PlatformPS4                  360.0496    53.6170   6.715 2.03e-11 ***
+## PlatformPSP                  -83.1589    49.1230  -1.693  0.09053 .  
+## PlatformPSV                   -8.5107    62.8195  -0.135  0.89224    
+## PlatformWii                  -32.8701    48.5025  -0.678  0.49798    
+## PlatformWiiU                 127.8797    68.4676   1.868  0.06184 .  
+## PlatformX360                  98.6520    45.0976   2.188  0.02874 *  
+## PlatformXB                   -95.1274    46.7874  -2.033  0.04207 *  
+## PlatformXOne                 154.9682    59.1918   2.618  0.00886 ** 
+## Critic_Score_c                 7.3756     3.3487   2.203  0.02766 *  
+## PlatformDC:Critic_Score_c      0.1074    24.4741   0.004  0.99650    
+## PlatformDS:Critic_Score_c     -5.7671     3.7548  -1.536  0.12460    
+## PlatformGBA:Critic_Score_c    -6.1484     4.1005  -1.499  0.13381    
+## PlatformGC:Critic_Score_c     -5.2146     3.8935  -1.339  0.18052    
+## PlatformPC:Critic_Score_c     34.6990     3.7965   9.140  &lt; 2e-16 ***
+## PlatformPS:Critic_Score_c     -3.7938     4.1841  -0.907  0.36458    
+## PlatformPS2:Critic_Score_c    -4.5100     3.5377  -1.275  0.20241    
+## PlatformPS3:Critic_Score_c     8.0821     3.5953   2.248  0.02461 *  
+## PlatformPS4:Critic_Score_c    23.9657     4.3160   5.553 2.92e-08 ***
+## PlatformPSP:Critic_Score_c    -5.5186     4.0471  -1.364  0.17274    
+## PlatformPSV:Critic_Score_c    -2.8826     5.4722  -0.527  0.59837    
+## PlatformWii:Critic_Score_c    -3.0483     3.6911  -0.826  0.40892    
+## PlatformWiiU:Critic_Score_c    1.8411     4.9920   0.369  0.71227    
+## PlatformX360:Critic_Score_c    5.0700     3.5410   1.432  0.15225    
+## PlatformXB:Critic_Score_c     -6.1569     3.6706  -1.677  0.09352 .  
+## PlatformXOne:Critic_Score_c    5.7104     4.5905   1.244  0.21356    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 512.7 on 6913 degrees of freedom
+## Multiple R-squared:  0.2343, Adjusted R-squared:  0.2306 
+## F-statistic:  64.1 on 33 and 6913 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>#plot the regression
+videogames2 %&gt;% 
+  ggplot(aes(User_Count, Critic_Score_c, fill= Platform, color = Platform)) + 
+  geom_smooth(method = &quot;lm&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>#linearity
+
+resids&lt;-fit$residuals
+fitvals&lt;-fit$fitted.values
+
+data.frame(resids,fitvals)%&gt;%ggplot(aes(fitvals,resids))+geom_point()+geom_hline(yintercept=0) #does not look linear.</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+<pre class="r"><code>#homoskedasticity
+
+bptest(fit)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  fit
+## BP = 376.42, df = 33, p-value &lt; 2.2e-16</code></pre>
+<pre class="r"><code>#normality
+ggplot()+geom_histogram(aes(resids, bin=10))</code></pre>
+<pre><code>## Warning: Ignoring unknown aesthetics: bin</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-4-3.png" width="672" /></p>
+<pre class="r"><code>ggplot()+geom_qq(aes(sample=resids))+geom_qq()</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-4-4.png" width="672" /></p>
+<pre class="r"><code>ks.test(resids, &quot;pnorm&quot;, mean=0, sd(resids))</code></pre>
+<pre><code>## Warning in ks.test(resids, &quot;pnorm&quot;, mean = 0, sd(resids)): ties should not be
+## present for the Kolmogorov-Smirnov test</code></pre>
+<pre><code>## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  resids
+## D = 0.3011, p-value &lt; 2.2e-16
+## alternative hypothesis: two-sided</code></pre>
+<pre class="r"><code># recompute regression results with robust standard errors
+coeftest(fit, vcov = vcovHC(fit))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##                               Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)                  117.96515   15.09269  7.8160 6.261e-15 ***
+## PlatformDC                  -161.37621   55.20193 -2.9234 0.0034738 ** 
+## PlatformDS                   -81.81518   15.40446 -5.3111 1.123e-07 ***
+## PlatformGBA                  -94.40214   15.29542 -6.1719 7.128e-10 ***
+## PlatformGC                   -83.21569   15.73010 -5.2902 1.259e-07 ***
+## PlatformPC                   329.41992   38.20445  8.6226 &lt; 2.2e-16 ***
+## PlatformPS                   -53.58661   18.15966 -2.9509 0.0031795 ** 
+## PlatformPS2                  -69.99115   15.45816 -4.5278 6.061e-06 ***
+## PlatformPS3                   97.56580   24.35233  4.0064 6.229e-05 ***
+## PlatformPS4                  360.04960   63.22922  5.6944 1.289e-08 ***
+## PlatformPSP                  -83.15891   15.43285 -5.3884 7.342e-08 ***
+## PlatformPSV                   -8.51068   20.78906 -0.4094 0.6822718    
+## PlatformWii                  -32.87014   21.35356 -1.5393 0.1237699    
+## PlatformWiiU                 127.87974   38.03924  3.3618 0.0007786 ***
+## PlatformX360                  98.65195   24.09826  4.0937 4.293e-05 ***
+## PlatformXB                   -95.12739   15.33519 -6.2032 5.852e-10 ***
+## PlatformXOne                 154.96821   37.31342  4.1531 3.319e-05 ***
+## Critic_Score_c                 7.37564    1.62557  4.5373 5.795e-06 ***
+## PlatformDC:Critic_Score_c      0.10735    4.04101  0.0266 0.9788064    
+## PlatformDS:Critic_Score_c     -5.76708    1.64565 -3.5044 0.0004605 ***
+## PlatformGBA:Critic_Score_c    -6.14840    1.64399 -3.7399 0.0001856 ***
+## PlatformGC:Critic_Score_c     -5.21461    1.73158 -3.0115 0.0026093 ** 
+## PlatformPC:Critic_Score_c     34.69895    5.42782  6.3928 1.735e-10 ***
+## PlatformPS:Critic_Score_c     -3.79383    1.83577 -2.0666 0.0388073 *  
+## PlatformPS2:Critic_Score_c    -4.51002    1.67352 -2.6949 0.0070572 ** 
+## PlatformPS3:Critic_Score_c     8.08205    2.75876  2.9296 0.0034051 ** 
+## PlatformPS4:Critic_Score_c    23.96565    8.24844  2.9055 0.0036786 ** 
+## PlatformPSP:Critic_Score_c    -5.51863    1.67133 -3.3019 0.0009650 ***
+## PlatformPSV:Critic_Score_c    -2.88259    2.97990 -0.9673 0.3334048    
+## PlatformWii:Critic_Score_c    -3.04829    1.98357 -1.5368 0.1243955    
+## PlatformWiiU:Critic_Score_c    1.84114    3.38533  0.5439 0.5865561    
+## PlatformX360:Critic_Score_c    5.06995    2.28747  2.2164 0.0266962 *  
+## PlatformXB:Critic_Score_c     -6.15688    1.66880 -3.6894 0.0002265 ***
+## PlatformXOne:Critic_Score_c    5.71035    3.78915  1.5070 0.1318497    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p><em>Highlighting a few of the coefficient estimates, the predicted user count of reviews for 3DS games with an average critic score is 117.96. PC games with an average critic score have a predicted user count of 329.419 higher than 3DS games with an average critic score. Xbox games with an average critic score have a predicted user count of 95.127 lower than 3DS games with an average critic score. The slope of critic score on the user count for PS4 games is 23.965 greater than for 3DS games. The slope of critic score on the user count for PC games is 34.698 greater than for 3DS games.For every 1 unit increase in critic score, predicted user count goes up by 7.37 for 3DS games. The assumptions for the linear regression model were violated across the board. Looking at the plot of resids and fitvals, the eyeballed linearity was not determined to be adequate enough to fit assumptions. Testing for homoskedasticity, the bptest gave a probability of less than 0.05, letting us know we have unequal variance. I used the ks.test to check for normality and this assumption was violated as well. The p-value says we can reject the null hypothesis of normality. The results of the coef test were expected to have greater standard errors due to penalizing our model after not meeting the assumption. Highlighting a few values and looking at the new standard errors, many previous unsignificant variables, such as Platform DC, DS, GBA, and GC, who's values were 41.617, 438.460, 48.30, 53.132, respectively, decreased in standard error and became significant. PC was significant and stayed significant, with a standard error of going from 47.32 to 38.204. Looking a significant interactive effect, PS4 and critic score, seemed to stay significant and increase in standard error as expected, going from 4.31 to 8.24. Critic score stayed significant while also decreasing in standard error. The unexpected decrease may have effects not known to the student. The proportion in the variation in the outcome that our model explains is 0.2343.</em></p>
+</div>
+<div id="rerun-same-regression-model-with-the-interaction-but-this-time-compute-bootstrapped-standard-errors" class="section level2">
+<h2>4.) Rerun same regression model (with the interaction), but this time compute bootstrapped standard errors</h2>
+<pre class="r"><code> fit&lt;-lm(User_Count~Platform*Critic_Score_c,data= videogames2) 
+boot_dat&lt;-videogames2 %&gt;% sample_frac(replace=TRUE)
+
+samp_distn&lt;-replicate(5000, {
+  boot_dat&lt;-videogames2 %&gt;% sample_frac(replace=TRUE)
+  fit&lt;-lm(User_Count~Platform*Critic_Score_c, data=boot_dat)
+  coef(fit)
+})
+
+## Estimated SEs
+samp_distn%&gt;%t%&gt;%as.data.frame%&gt;%summarize_all(sd)</code></pre>
+<pre><code>##   (Intercept) PlatformDC PlatformDS PlatformGBA PlatformGC PlatformPC
+## 1    14.78248   56.88338   15.15584    14.99453   15.38484    38.4296
+##   PlatformPS PlatformPS2 PlatformPS3 PlatformPS4 PlatformPSP PlatformPSV
+## 1   17.77238    15.12129    24.31501    62.10518    15.13974    20.33949
+##   PlatformWii PlatformWiiU PlatformX360 PlatformXB PlatformXOne Critic_Score_c
+## 1    20.95395      36.7887     23.82199   15.01872     36.46362       1.597864
+##   PlatformDC:Critic_Score_c PlatformDS:Critic_Score_c
+## 1                  4.135531                  1.622216
+##   PlatformGBA:Critic_Score_c PlatformGC:Critic_Score_c
+## 1                   1.619885                  1.708388
+##   PlatformPC:Critic_Score_c PlatformPS:Critic_Score_c
+## 1                  5.444898                  1.778638
+##   PlatformPS2:Critic_Score_c PlatformPS3:Critic_Score_c
+## 1                   1.643292                    2.73797
+##   PlatformPS4:Critic_Score_c PlatformPSP:Critic_Score_c
+## 1                    8.14709                   1.645536
+##   PlatformPSV:Critic_Score_c PlatformWii:Critic_Score_c
+## 1                   2.840339                   1.957145
+##   PlatformWiiU:Critic_Score_c PlatformX360:Critic_Score_c
+## 1                    3.323889                    2.261649
+##   PlatformXB:Critic_Score_c PlatformXOne:Critic_Score_c
+## 1                  1.642003                     3.74362</code></pre>
+<pre class="r"><code>samp_distn %&gt;% t %&gt;% as.data.frame %&gt;% pivot_longer(1:34) %&gt;% group_by(name) %&gt;%
+ summarize(lower=quantile(value,.025), upper=quantile(value,.975))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre><code>## # A tibble: 34 x 3
+##    name                         lower  upper
+##    &lt;chr&gt;                        &lt;dbl&gt;  &lt;dbl&gt;
+##  1 (Intercept)                  89.5  148.  
+##  2 Critic_Score_c                4.50  10.7 
+##  3 PlatformDC                 -278.   -62.3 
+##  4 PlatformDC:Critic_Score_c    -6.62   9.29
+##  5 PlatformDS                 -112.   -52.1 
+##  6 PlatformDS:Critic_Score_c    -9.14  -2.83
+##  7 PlatformGBA                -125.   -65.3 
+##  8 PlatformGBA:Critic_Score_c   -9.52  -3.22
+##  9 PlatformGC                 -114.   -54.1 
+## 10 PlatformGC:Critic_Score_c    -8.69  -2.07
+## # … with 24 more rows</code></pre>
+<p><em>Comparaing to the previous observed values, the values for Platform DC and DS increased, while GBA, GC, PC, critic score, and PS4 &amp; critic score standard errors decreased. These values did not shift by more than a 1 unit increase, staying almost consistent. Using the 95% CI from our data, we can do hypothesis tests and ask if 0 is a plausible value. Highlighting some of the data, we can reject the hypothesis that the variable is not significant for variables such as critic score, platform DS, GBA, GC, PC, and the interaction between PS4 &amp; critic score interaction.</em></p>
+</div>
+<div id="logistic-regression-model-predicting-a-binary-variable-from-at-least-2-explanatory-variables-no-interaction" class="section level2">
+<h2>5. Logistic Regression Model Predicting a binary variable from at least 2 explanatory variables (no interaction)</h2>
+<pre class="r"><code>data &lt;- videogames %&gt;% mutate(y=ifelse(Rating==&quot;E&quot;, 1 ,0))
+
+data$User_Score &lt;- as.numeric(data$User_Score)
+
+#model
+fit2&lt;-glm(y~Global_Sales+User_Score, family=&quot;binomial&quot;,  data=data)
+coeftest(fit2)</code></pre>
+<pre><code>## 
+## z test of coefficients:
+## 
+##               Estimate Std. Error z value  Pr(&gt;|z|)    
+## (Intercept)  -0.762200   0.131968 -5.7756 7.667e-09 ***
+## Global_Sales  0.064851   0.015070  4.3033 1.683e-05 ***
+## User_Score   -0.015781   0.018118 -0.8710    0.3838    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>exp(coef(fit2))</code></pre>
+<pre><code>##  (Intercept) Global_Sales   User_Score 
+##    0.4666388    1.0669996    0.9843428</code></pre>
+<pre class="r"><code>#ACC, TPR, TNR, PPV, AUC &amp; confusion matrix 
+
+probs&lt;-predict(fit2,type=&quot;response&quot;) 
+pred&lt;-ifelse(probs&gt;.5,1,0)
+
+table(truth=data$y, prediction=pred)%&gt;%addmargins</code></pre>
+<pre><code>##      prediction
+## truth    0    1  Sum
+##   0   4819   10 4829
+##   1   2105   13 2118
+##   Sum 6924   23 6947</code></pre>
+<pre class="r"><code>class_diag&lt;-function(probs,truth){
+  
+  if(is.numeric(truth)==FALSE &amp; is.logical(truth)==FALSE) truth&lt;-as.numeric(truth)-1
+  
+  tab&lt;-table(factor(probs&gt;.5,levels=c(&quot;FALSE&quot;,&quot;TRUE&quot;)),truth)
+  prediction&lt;-ifelse(probs&gt;.5,1,0)
+  acc=mean(truth==prediction)
+  sens=mean(prediction[truth==1]==1)
+  spec=mean(prediction[truth==0]==0)
+  ppv=mean(truth[prediction==1]==1)
+  f1=2*(sens*ppv)/(sens+ppv)
+
+  ord&lt;-order(probs, decreasing=TRUE)
+  probs &lt;- probs[ord]; truth &lt;- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup&lt;-c(probs[-1]&gt;=probs[-length(probs)], FALSE)
+  TPR&lt;-c(0,TPR[!dup],1); FPR&lt;-c(0,FPR[!dup],1)
+  
+  n &lt;- length(TPR)
+  auc&lt;- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}
+
+class_diag(probs,data$y)</code></pre>
+<pre><code>##        acc        sens      spec       ppv       auc
+## 1 0.695552 0.006137866 0.9979292 0.5652174 0.5294396</code></pre>
+<pre class="r"><code>#Logit density plot
+
+data$logit&lt;-predict(fit2,type=&quot;link&quot;)
+
+data%&gt;%ggplot()+geom_density(aes(logit,color=as.factor(y),fill=as.factor(y)), alpha=.4)+
+  theme(legend.position=c(.85,.85))+geom_vline(xintercept=0)+xlab(&quot;logit (log-odds)&quot;)+
+  geom_rug(aes(logit,color=as.factor(y)))</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>#ROC curve and calculating AUC
+
+ROCplot &lt;- ggplot(fit2) + geom_roc(aes(d=y, m=probs), n.cuts=0)
+ROCplot</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<pre class="r"><code>calc_auc(ROCplot)</code></pre>
+<pre><code>##   PANEL group      AUC
+## 1     1    -1 0.529444</code></pre>
+<p><em>With a global sales and user score of zero, the odds of being an E rated game is 0.4666. For every 1 increase in global sales, the odds of being an E rated game is multiplied by 1.067. For every 1 increase in user score, the odds of being an E rated game is multiplied by 0.984. Out of 6,947 games, the classifier predicted 6,924 would be non-E rated games and 23 would be E-rated games. In reality, there are 2,118 E-rated games and 4,829 non-E rated games. Out of 6,947 games, the classifier predicted 6,924 would be non-E rated games and 23 would be E-rated games. In reality, there are 2,118 E-rated games and 4,829 non-E rated games. Overall, the proportion of the model that correctly classified games as E-rated or non-E-rated was 0.695 based on the class diag accuracy output.Out of every game that is actually rated E, the proportion of our model that is flagging those games as rated E is 0.00613, based on our sensitivity value in the class diag output. Out of every game that is actually a non-E-rated game, the proportion of our model that is flagging those games correctly is 0.997, based on our specificity value in the class diag output. Out of all of the values that our matrix is classifying as E-rated games, the proportion of those that are actually E-rated games are 0.565 based on the precision value in our class diag output. The ROC plot does represent a perfect world and shows almost a completely random prediction. The AUC is bad.</em></p>
+</div>
+<div id="logistic-regression-predicting-the-same-binary-response-variable-from-all-of-the-rest-of-your-variables" class="section level2">
+<h2>6. Logistic regression predicting the same binary response variable from ALL of the rest of your variables</h2>
+<pre class="r"><code>potato &lt;- sample_n(videogames, 4000)
+
+sad2 &lt;- potato %&gt;% select(Critic_Count, Critic_Score, User_Count, User_Score, Rating)
+gamerr&lt;- sad2 %&gt;% mutate(y=ifelse(Rating==&quot;E&quot;, 1 ,0))
+gamerr$Rating&lt;-NULL 
+
+fit6 &lt;- glm(y~., data=gamerr, family=&quot;binomial&quot;)
+probs&lt;-predict(fit6,type=&quot;response&quot;) 
+class_diag(probs, gamerr$y)</code></pre>
+<pre><code>##      acc      sens      spec       ppv       auc
+## 1 0.7075 0.1213633 0.9595996 0.5637066 0.6911547</code></pre>
+<pre class="r"><code>## k-fold CV
+set.seed(1234)
+k=10 #choose number of folds
+
+data &lt;-gamerr[sample(nrow(gamerr)),] #randomly order rows
+folds&lt;-cut(seq(1:nrow(gamerr)),breaks=k,labels=F) #create folds
+
+diags&lt;-NULL
+for(i in 1:k){
+  ## Create training and test sets
+  train&lt;-data[folds!=i,] 
+  test&lt;-data[folds==i,]
+  
+  truth&lt;-test$y ## Truth labels for fold i
+  
+  ## Train model on training set (all but fold i)
+  fit&lt;-glm(y~.,data=train,family=&quot;binomial&quot;)
+  
+  ## Test model on test set (fold i) 
+  probs&lt;-predict(fit,newdata = test,type=&quot;response&quot;)
+  
+  ## Get diagnostics for fold i
+  diags&lt;-rbind(diags,class_diag(probs,truth))
+}
+summarize_all(diags,mean) #average diagnostics across all k folds</code></pre>
+<pre><code>##      acc      sens      spec       ppv       auc
+## 1 0.7065 0.1206664 0.9591714 0.5639724 0.6888534</code></pre>
+<pre class="r"><code>#Lasso
+y&lt;-as.matrix(gamerr$y) #grab response
+x&lt;-model.matrix(y~.,data=gamerr)[,-1]
+head(x)</code></pre>
+<pre><code>##   Critic_Count Critic_Score User_Count User_Score
+## 1            7           44         16        6.5
+## 2           56           79        161        7.8
+## 3           34           61          7        5.3
+## 4           73           78         76        8.2
+## 5           24           69         12        5.0
+## 6           31           75        166        4.4</code></pre>
+<pre class="r"><code>cv&lt;-cv.glmnet(x,y,family=&quot;binomial&quot;)
+lasso&lt;-glmnet(x,y,family=&quot;binomial&quot;,lambda=cv$lambda.1se)
+coef(lasso)</code></pre>
+<pre><code>## 5 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                         s0
+## (Intercept)  -1.4188057792
+## Critic_Count -0.0270152547
+## Critic_Score  0.0198698826
+## User_Count   -0.0008312969
+## User_Score    .</code></pre>
+<pre class="r"><code>#cross-validating lasso model
+set.seed(1234)
+k=10
+
+dva &lt;- gamerr %&gt;% sample_frac #put rows of dataset in random order
+folds &lt;- ntile(1:nrow(gamerr),n=10) #create fold labels
+
+diags &lt;-NULL
+for(i in 1:k){
+  train &lt;- dva[folds!=i,] #create training set (all but fold i)
+  test &lt;- dva[folds==i,] #create test set (just fold i)
+  truth &lt;- test$y #save truth labels from fold i
+  
+  fit &lt;- glm(y~Critic_Count + Critic_Score + User_Count, 
+             data=train, family=&quot;binomial&quot;)
+  probs &lt;- predict(fit, newdata=test, type=&quot;response&quot;)
+  
+  diags&lt;-rbind(diags,class_diag(probs,truth))
+}
+summarize_all(diags,mean)</code></pre>
+<pre><code>##     acc       sens      spec       ppv       auc
+## 1 0.704 0.09930944 0.9644287 0.5616581 0.6877649</code></pre>
+<p><em>The model was calculated at 50% of the original length and with columns of interest in order to preserve Sara's computer processing power from setting on fire.For the in-sample fit model, we can look at the classification diagnostics and have more information about the model. Overall, the proportion of the model that correctly classified games as E-rated or non-E-rated was 0.708, based on the class diag accuracy output. Out of every game that is actually rated E, the proportion of our model that is flagging those games as rated E is 0.126, based on our sensitivity value in the class diag output. Out of every game that is actually a non-E-rated game, the proportion of our model that is flagging those games correctly is 0.961, based on our specificity value in the class diag output. Out of all of the values that our matrix is classifying as E-rated games, the proportion of those that are actually E-rated games are 0.590 based on the precision value in our class diag output. The AUC is 0.694, which tells us this model is poor, almost fair in predicting TPR and FPR! For the average out-of-sample classification diagnostics, the values differed slightly but did not have any improvment. While the values would represent a similar ROC curve and hold the same meaning in interpretation (see above paragraph), the new accuraciy, sensitivity, specificity, and precision of 0.704, 0.122, 0.958, and 0.574, respectively, still are not part of a good model. The decreased AUC of 0.693 also represents a poor, almost fair model, more random than the the in-sample. The LASSO model's finest lambda that meets the best requirements retains the variables Crtic_Count, User_Score, and Critic_Score. Comparing the model's out of sample AUC to that to that of the logistic regressions above, while the AUC decreased by 0.0002 to 0.692, it was not enough to say the cross-validating lasso model made the AUC much less predictable than it already was at, which is a poor, almost fair value, in which we will see most ROC curves let us know predictions will happen almost randomly.</em></p>
+</div>
+</div>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../../js/docs.min.js"></script>
+<script src="../../js/main.js"></script>
+
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>
