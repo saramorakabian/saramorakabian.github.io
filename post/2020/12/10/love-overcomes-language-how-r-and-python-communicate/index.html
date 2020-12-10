@@ -7,7 +7,7 @@
     <meta name="author" content="Sara Morakabian" />
     
     <link rel="shortcut icon" type="image/x-icon" href="../../../../../img/favicon.ico">
-    <title>Slithering Into Python</title>
+    <title>Love Overcomes Language; How R and Python Communicate</title>
     <meta name="generator" content="Hugo 0.79.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="../../../../../css/main.css" />
@@ -54,13 +54,13 @@
       <div class="container">
         <div class="blog-post">
           <h3>
-            <strong><a href="../../../../../post/2020/12/09/slithering-into-python/">Slithering Into Python</a></strong>
+            <strong><a href="../../../../../post/2020/12/10/love-overcomes-language-how-r-and-python-communicate/">Love Overcomes Language; How R and Python Communicate</a></strong>
           </h3>
         </div>
  
 <div class="blog-title">
           <h4>
-         December 9, 2020 
+         December 10, 2020 
             &nbsp;&nbsp;
             
           </h4>
@@ -72,45 +72,25 @@
               
 
 
+<div id="a-tale-of-two" class="section level1">
+<h1>A Tale of Two</h1>
+<p>Should lovers who speak different languages be forced to never communicate and reach their truest potential as partners? No! #lovealwayswins Should two different languages never be able to exchange data? I think you know the answer to this question, homeslice. Here's how it goes.</p>
 <div class="figure">
-<img src="../../../../../post/2020-12-09-slithering-into-python_files/skep.jpg" />
+<img src="../../../../../post/2020-12-10-love-overcomes-language-how-r-and-python-communicate_files/love.PNG" />
 
 </div>
-<div id="breaking-up-with-r" class="section level1">
-<h1>Breaking Up with R</h1>
-<p>I started learning the basics of Python in the last unit of my computational biology course and laughed because I could not comprehend the transiton after working with R for over a year. Little did my close-minded self know how cool Python and the available packages could be (I still love you R, but I think we should consider an open relationship).</p>
-<div id="r-and-python-two-apples-from-the-same-tree" class="section level2">
-<h2>R and Python; Two Apples From the Same Tree</h2>
-<p>Not only is Python is much more versatile and ranked number one amongst many programming languages, it lets me do everything I did in R! so I am glad I can translate the same information and learn even more useful tools in Python. Here are some descriptive statistics computed base R compared with the same statistics computed in Python. The package Numpy (sounds like a Seasame Street Elephant with short legs) is an open-source numerical Python library used for working witrh arrays.</p>
-<div id="finding-the-mean-median-of-earthquake-magnitude-and-depth-in-base-r" class="section level3">
-<h3>Finding the mean &amp; median of earthquake magnitude and depth in base R</h3>
-<pre class="r"><code>quakes &lt;- quakes
-
-mean(quakes$mag)</code></pre>
-<pre><code>## [1] 4.6204</code></pre>
-<pre class="r"><code>median(quakes$mag)</code></pre>
-<pre><code>## [1] 4.6</code></pre>
-<pre class="r"><code>mean(quakes$depth)</code></pre>
-<pre><code>## [1] 311.371</code></pre>
-<pre class="r"><code>median(quakes$depth)</code></pre>
-<pre><code>## [1] 247</code></pre>
-</div>
-<div id="finding-the-mean-median-of-earthquake-magnitude-and-depth-with-numpy" class="section level3">
-<h3>Finding the mean &amp; median of earthquake magnitude and depth with Numpy</h3>
-<pre class="python"><code>import pandas as pd
-quakes=pd.read_csv(&quot;https://vincentarelbundock.github.io/Rdatasets/csv/datasets/quakes.csv&quot;,index_col=0)
-
-import numpy as np
-np.mean(quakes.mag)</code></pre>
-<pre><code>## 4.6204000000000001</code></pre>
-<pre class="python"><code>np.median(quakes.mag)</code></pre>
-<pre><code>## 4.5999999999999996</code></pre>
-<pre class="python"><code>np.mean(quakes.depth)</code></pre>
-<pre><code>## 311.37099999999998</code></pre>
-<pre class="python"><code>np.median(quakes.depth)</code></pre>
-<pre><code>## 247.0</code></pre>
-<p>There you go! Look at that. Maybe you can use R on casual Tuesdays and Python on date night. They're both great for data analysis. The cs world torments me becuase I know Python is the way to go for versatility, in the end.</p>
-</div>
+<div id="easy-breezy-cover-squirrel" class="section level2">
+<h2>Easy, Breezy, Cover Squirrel</h2>
+<p>First, R needs to have the library to exchange the flowers(data) he wants to give to Python.</p>
+<pre class="r"><code>library(reticulate)</code></pre>
+<p>Then, R will define his offering (the information you want Python to read)</p>
+<pre class="r"><code>C10H12N2O &lt;- &quot;seratonin&quot;
+&quot;This is all of my love in a material offering, ilysm&quot; &lt;- C10H12N2O
+brightredroses &lt;- &quot;This is all of my love in a material offering, ilysm&quot;</code></pre>
+<p>So anything you defined in R, you can grab anything with &quot;r.&quot; and follow up with what you want to grab after the &quot;.&quot;. Python will now accept her roses!</p>
+<pre class="python"><code>print(r.brightredroses)</code></pre>
+<pre><code>## This is all of my love in a material offering, ilysm</code></pre>
+<p>Isn't young love beautiful?</p>
 </div>
 </div>
 

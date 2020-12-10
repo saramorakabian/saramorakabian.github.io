@@ -1,0 +1,39 @@
+---
+title: "Love Overcomes Language; How R and Python Communicate"
+author: ''
+date: '2020-12-10'
+description: ''
+slug: love-overcomes-language-how-r-and-python-communicate
+tags: []
+categories: []
+---
+
+#A Tale of Two
+
+Should lovers who speak different languages be forced to never communicate and reach their truest potential as partners? No! #lovealwayswins
+Should two different languages never be able to exchange data? I think you know the answer to this question, homeslice.
+Here's how it goes.
+
+![](/post/2020-12-10-love-overcomes-language-how-r-and-python-communicate_files/love.PNG)
+
+
+##Easy, Breezy, Cover Squirrel
+First, R needs to have the library to exchange the flowers(data) he wants to give to Python.
+```{r}
+library(reticulate)
+```
+
+Then, R will define his offering (the information you want Python to read)
+```{r}
+C10H12N2O <- "seratonin"
+"This is all of my love in a material offering, ilysm" <- C10H12N2O
+brightredroses <- "This is all of my love in a material offering, ilysm"
+```
+
+
+So anything you defined in R, you can grab anything with "r." and follow up with what you want to grab after the ".". Python will now accept her roses!
+```{python}
+print(r.brightredroses)
+```
+
+Isn't young love beautiful?

@@ -6,14 +6,24 @@
     <description>Recent content on Sara Morakaian</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Wed, 09 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 10 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Love Overcomes Language; How R and Python Communicate</title>
+      <link>/post/2020/12/10/love-overcomes-language-how-r-and-python-communicate/</link>
+      <pubDate>Thu, 10 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2020/12/10/love-overcomes-language-how-r-and-python-communicate/</guid>
+      <description>A Tale of Two Should lovers who speak different languages be forced to never communicate and reach their truest potential as partners? No! #lovealwayswins Should two different languages never be able to exchange data? I think you know the answer to this question, homeslice. Here&#39;s how it goes.
+ Easy, Breezy, Cover Squirrel First, R needs to have the library to exchange the flowers(data) he wants to give to Python.</description>
+    </item>
+    
     <item>
       <title>Project 1</title>
       <link>/project/project1/</link>
       <pubDate>Wed, 09 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>/project/project1/</guid>
-      <description>R Markdown bad_drivers &amp;lt;- read.csv(&amp;quot;bad_drivers.csv&amp;quot;) partisan_lean &amp;lt;- read.csv(&amp;quot;partisan_lean.csv&amp;quot;) bad_drivers &amp;lt;- bad_drivers partisan_lean &amp;lt;- partisan_lean library(tidyverse) ## ── Attaching packages ─────────────────────────── tidyverse 1.3.0 ── ## ✓ ggplot2 3.3.2 ✓ purrr 0.3.4 ## ✓ tibble 3.0.3 ✓ dplyr 1.0.1 ## ✓ tidyr 1.1.1 ✓ stringr 1.4.0 ## ✓ readr 1.3.1 ✓ forcats 0.5.0 ## ── Conflicts ────────────────────────────── tidyverse_conflicts() ── ## x dplyr::filter() masks stats::filter() ## x dplyr::lag() masks stats::lag() library(plotly) ## ## Attaching package: &amp;#39;plotly&amp;#39; ## The following object is masked from &amp;#39;package:ggplot2&amp;#39;: ## ## last_plot ## The following object is masked from &amp;#39;package:stats&amp;#39;: ## ## filter ## The following object is masked from &amp;#39;package:graphics&amp;#39;: ## ## layout library(GGally) ## Registered S3 method overwritten by &amp;#39;GGally&amp;#39;: ## method from ## +.</description>
+      <description>R Markdown bad_drivers &amp;lt;- read.csv(&amp;quot;bad_drivers.csv&amp;quot;) partisan_lean &amp;lt;- read.csv(&amp;quot;partisan_lean.csv&amp;quot;) bad_drivers &amp;lt;- bad_drivers partisan_lean &amp;lt;- partisan_lean library(tidyverse) ## ── Attaching packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ── ## ✓ ggplot2 3.3.2 ✓ purrr 0.3.4 ## ✓ tibble 3.0.3 ✓ dplyr 1.0.1 ## ✓ tidyr 1.1.1 ✓ stringr 1.4.0 ## ✓ readr 1.3.1 ✓ forcats 0.5.0 ## ── Conflicts ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ── ## x dplyr::filter() masks stats::filter() ## x dplyr::lag() masks stats::lag() library(plotly) ## ## Attaching package: &amp;#39;plotly&amp;#39; ## The following object is masked from &amp;#39;package:ggplot2&amp;#39;: ## ## last_plot ## The following object is masked from &amp;#39;package:stats&amp;#39;: ## ## filter ## The following object is masked from &amp;#39;package:graphics&amp;#39;: ## ## layout library(GGally) ## Registered S3 method overwritten by &amp;#39;GGally&amp;#39;: ## method from ## +.</description>
     </item>
     
     <item>
@@ -33,17 +43,6 @@
       <guid>/post/2020/12/09/slithering-into-python/</guid>
       <description>Breaking Up with R I started learning the basics of Python in the last unit of my computational biology course and laughed because I could not comprehend the transiton after working with R for over a year. Little did my close-minded self know how cool Python and the available packages could be (I still love you R, but I think we should consider an open relationship).
 R and Python; Two Apples From the Same Tree Not only is Python is much more versatile and ranked number one amongst many programming languages, it lets me do everything I did in R!</description>
-    </item>
-    
-    <item>
-      <title>Hello R Markdown</title>
-      <link>/post/2015/07/23/hello-r-markdown/</link>
-      <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
-      
-      <guid>/post/2015/07/23/hello-r-markdown/</guid>
-      <description>R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-You can embed an R code chunk like this:
-summary(cars) ## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 26.00 ## Median :15.0 Median : 36.00 ## Mean :15.4 Mean : 42.98 ## 3rd Qu.</description>
     </item>
     
     <item>
