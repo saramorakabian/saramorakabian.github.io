@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Sara Morakaian</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Thu, 23 Jul 2015 21:13:14 -0500</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 09 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Slithering Into Python</title>
+      <link>/post/2020/12/09/slithering-into-python/</link>
+      <pubDate>Wed, 09 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2020/12/09/slithering-into-python/</guid>
+      <description>I started learning the basics of Python in the last unit of my computational biology course and laughed because I could not comprehend the transiton after working with R for over a year. Little did my close-minded self know how cool Python could be (I still love you R, but I think we should consider an open relationship).  Here is some base python I&#39;ve learned to use! Numpy (the name of a package that sounds like a Seasame Street Elephant with short legs), a numerical Python library, is great for array indexing!</description>
+    </item>
+    
     <item>
       <title>Hello R Markdown</title>
       <link>/post/2015/07/23/hello-r-markdown/</link>

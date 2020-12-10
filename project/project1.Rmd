@@ -1,8 +1,201 @@
 ---
 title: "Project 1"
-author: "Me"
-date: "2020-12-01"
+author: "Sara Morakabian"
+date: "2020-12-09"
 output: html_document
 ---
 
-## Test Project 1
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## R Markdown
+
+```{r}
+bad_drivers <- read.csv("bad_drivers.csv")
+partisan_lean <- read.csv("partisan_lean.csv")
+bad_drivers <- bad_drivers
+partisan_lean <- partisan_lean
+library(tidyverse)
+library(plotly)
+library(GGally)
+library(cluster)
+```
+
+
+##Introduction
+#I have chosen the datasets bad_drivers and partisan_lean. The dataset bad_drivers gives a plethoa of information on the worst drivers from each U.S. state and D.C. The dataset has 51 total rows that represent the 50 states and District of Columbia, and 7 additonal variables that give numeric data about the drivers accidents. The variables include state, num_drivers, perc_speeding, perc_alcohol, perc_not_distracted, perc_no_previous, insurance_premiums, and losses. Therse were all representative of those involved in fatal collisons. Losses is based on insurance losses. The dataset partisan_lean has 50 rows and 3 columns describing data with state, the 50 states, pvi_party, the party of their vote (Democratic or Republican), and pvi_amount, which is the Cook Partisan Voting Index of the vote. I found these datasets when browsing the packages given to us in the project insructions from the CRAN package fivethirtyeight. I found bad_drivers interesting because I wonder which state really has the worst drivers! I feel like driving in Austin makes Texas a top choice, but I will see! I chose partisan_lean because I wanted to see if the direction a state leans politically correlates or has associations with how bad the drivers are. I am keeping an open mind on counfounding variables like population, education, and more.
+
+
+
+
+##Joining/Merging
+```{r}
+
+partydrivers <- partisan_lean %>% left_join(bad_drivers)
+
+```
+#My datasets were both tidy! Every value belongs to a variable and an observation. Because they were tidy, I was ready to join the datasets. I did a left join on partisan_lean. I chose left join because I only wanted the rows from bad_drivers that the same rows of states as partisan_lean. Bad_drivers had information over District of Columbia, while partisan_lean was lacking District of Columbia. I would not have been able to compare and analyze any correlational data between political association and the bad drivers in the District of Columbia. 
+
+
+
+##Wrangling
+
+
+```{r}
+
+#Filter
+partydrivers %>% filter(pvi_party=="D", insurance_premiums<935)
+
+#Select
+partydrivers %>% select(state, contains("perc"))
+
+#Arrange
+partydrivers %>% arrange(desc(losses))
+  
+#Mutate, Group_By 
+partydrivers %>% group_by(pvi_party) %>% mutate(mean2 = cummean(perc_alcohol)) %>% arrange(desc(mean2))
+
+
+#Summary Statistics 
+
+partydrivers %>%  summarize(across(where(is.numeric), ~ mean(.x, na.rm = TRUE)))
+partydrivers %>%  summarize(across(where(is.numeric), ~ sd(.x, na.rm = TRUE)))
+partydrivers %>%  summarize(across(where(is.numeric), ~ var(.x, na.rm = TRUE)))
+partydrivers %>%  summarize(across(where(is.numeric), ~ quantile(.x, na.rm = TRUE)))
+partydrivers %>%  summarize(across(where(is.numeric), ~ min(.x, na.rm = TRUE)))
+partydrivers %>%  summarize(across(where(is.numeric), ~ max(.x, na.rm = TRUE)))
+partydrivers %>%  summarize(across(where(is.numeric), ~ median(.x, na.rm = TRUE)))
+partydrivers %>%  summarize(across(where(is.numeric), ~ n_distinct(.x, na.rm = TRUE)))
+
+partydriversonlynum <- partydrivers %>% select_if(is.numeric)
+partydriversonlynum %>% cor
+
+partydrivers %>% group_by(pvi_party) %>% summarize(mean = mean(num_drivers), sd = sd(num_drivers))
+
+partydrivers %>% group_by(pvi_party) %>% summarise(median = median(perc_alcohol), n = n())
+
+
+#Summary statistics Visualizations & Tidying to rearrange wide/long
+
+partydrivers2 <- partydrivers
+names(partydrivers2)<-gsub("\\_","",names(partydrivers2))
+
+
+partydrivers2 %>%  summarize_if(is.numeric,.funs = list("mean"=mean,"median"=median, "sd"=sd, "max"=max, "min"=min, "var"=var, "ndistinct" = n_distinct), na.rm=T) %>%
+pivot_longer(contains("_"))%>%
+separate(name,into=c("Variable","Statistics"), sep="_", convert = T)%>%
+pivot_wider(names_from = "Variable",values_from="value")%>% arrange(Statistics)
+
+
+
+```
+
+
+#Using the filter function, I was curious to see which Democratic leaning states had insurance premiums lower than the national average of $935. Looking at the states, such as California, Colorado, and Maine, there does not seem to be a certain area that the cheaper insurance premiums reside in. I used the select function to look at the percentage statistics in each state that the datasets had included to view information based on drivers. I used to arrange to look at the loss’s insurance companies had in descending order to see which states were affected the most. I grouped by the leaning party and created a new column to look at the average alcohol consumption. I took the summary statistics of the entire dataset from mean, median, quantile, var, and more. After, I created a correlation coefficient to see which variables were most strongly related, which were losses and insurance premiums. Finally, I grouped by pvi party to look at the mean and standard deviation of the number of drivers and the median and of the percent alcohol, respectively. It was interesting to see that both the Democratic and Republican states had a median of 30% of drivers impaired by alcohol.
+
+#When making my condensed table of summary statistics, I needed to tidy the data to make it less wide. There were repeating columns with the same variable, such as multiple columns with summary statistics like mean, and multiple columns with the same variable such as numdrivers used again. In order to condense this, I took used pivot_longer to lengthen the table with the same data being presented in a vertical fashion. Once calculating summary statistics, all columns included the character "_", which made it simple to pivot based on that. After I pivoted longer, I used separate to put the separated column names by the "_" into their one column called Variable. I placed all of the summary functions in a column called Statistics. I then used pivot_wider to place the original column data from partydrivers2 into each of their own columns with summary statistics included.
+
+
+
+
+##Visualizations
+
+#Correlation Heatmap
+```{r}
+
+partydrivedf <- partydrivers %>% select_if(is.numeric) %>% cor()
+partydrivedf
+partydrivedf2 <- partydrivedf %>% as.data.frame()
+
+tidyparty <- partydrivedf2 %>% rownames_to_column("var1") %>% 
+pivot_longer(-1, names_to="var2", values_to="correlation")
+
+tidyparty %>% ggplot(aes(var1, var2, fill=correlation)) + geom_tile() + scale_fill_gradient2(low="purple", mid="white", high="red") + geom_text(aes(label=round(correlation,2)),color = "black", size = 2)+ 
+theme(axis.text.x = element_text(angle = 90, hjust = 1))+  coord_fixed()+ ggtitle("Correlation Heatmap")
+
+```
+
+#Disregarding the correlation of 1 between the variables with themselves, the majority of the plot relays a white, peach or pink color between variables. The light pink, white, and peach can may be considered but is not the main focus of the heatmap as the correlations are close to none. Correlations are lacking between many of the variables and the datasets do not appear to be related, whether negative or positive. For example, the percent of previous drivers without accidents correlated with insurance premiums or pvi amount is 0, and we can assume do not affect each other at all. This could mean when average insurance premiums are decided for the state, the percent of drivers without previous accidents is not taken into account. Perc_no_previous also contains the strongest negative correlation seen on the heatmap, with percent alcohol and percent not distracted.. It would make sense that as there are more drivers who have not had accidents, it is less likely to have a higher percentage of alcohol impaired drivers and distracted drivers because the drivers tend to be more responsible. The strongest correlation seen in this heatmap is that between the losses by insurance companies and insurance premiums. The strong correlation between the two variables shows the proable dependency that the premiums have on the financial losses of the company. The only variable that connects the two datasets is the correlation between the number of drivers and pvi amount. This could possibly give some confirmation towards the initial question, if the political affiliation or score has impacting results on collisions in the state, or vice versa.
+
+
+#Plot 1
+
+```{r}
+
+
+partydrivers %>% ggplot(aes(losses, insurance_premiums, color=pvi_party)) + xlab("Losses Incurred Per Insured Drivers Collisons ($)") + ylab("Car Insurance Premiums ($)") + ggtitle("Car Insurance Premiums vs  Insurance Company Collision Losses Per Party ") + geom_point()+ theme_bw() +scale_x_continuous(n.breaks=15) + geom_smooth(method = "lm") + scale_color_manual(values = c("#0C0CDE", "#D51717"))
+
+```
+
+
+#The graph shows a positive correlation on both of our trendlines. In both Democratic and Republican states, higher losses result in higher premiums, presumably to make up for the losses. Looking at the trendlines between the parties, it appears citizens in Democratic states tend to pay more in insurance premiums overall than those in Republican states. The outliers in blue states tend to be higher than the trend line and the outliers in red states tend to be below the trendline. Presumably you could be potentially paying higher rates in the blue states. The trendlines do not start at the same point, and the minimum cost tends to be lower in the red states than in the blue states. The confidence interval on the higher end of losses are lacking in points, and it must be taken with a grain of salt that this positive, linear correlation would continue.
+
+
+
+
+#Plot 2
+```{r}
+
+partydriversinsur <- partydrivers %>%mutate(insurance_rate = case_when(insurance_premiums>1074 ~ "high",
+                                          insurance_premiums<=1074 & 744<=insurance_premiums ~ "med",
+                                            insurance_premiums<744 ~ "low"))
+partydriversinsur
+
+
+partydriversinsur %>% ggplot(aes(x =pvi_party , y =perc_no_previous , fill=insurance_rate))+
+  geom_bar(stat="summary", fun=mean, position="dodge") + scale_fill_manual(values=c("blue", "dark green", "purple"), 
+                       name="National Insurance Rate",
+                  
+                       labels=c("High Rate", "Medium Rate", "Low Rate")) + xlab("Political Party") + ylab("Percentage of Drivers with No Previous Accidents") + ggtitle("Insurance Rate vs Rate of Previous Accidents Per Party") 
+
+
+```
+
+#This barplot is answering the question, for the states that have a high, medium, or low insurance rate on average, what percentage of their drivers have no previous accidents? This is grouped by the states that lean Democrat and Republican. Based on the aggregate percentage of "previous accidents", one could claim that Republican states  tend to have less accidents than those of Democratic states. For the states that have medium and low insurance rates on average, regardless of the political affiliation, tend to have simmilar accident histories. In Republican states, there is a greater number of citizens with fewer previous accidents that pay a higher insurance rate. In Democratic states, there is a lesser number of citizens with previous accidents that pay a higher insurance rate. There may be a counfounding variable in the disparity between the high rate paying Democratic and Republican states.
+
+
+
+
+
+##Clustering 
+
+#PAM 
+
+```{r}
+r = getOption("repos")
+r["CRAN"] = "http://cran.us.r-project.org"
+options(repos = r)
+install.packages("cluster")
+library(cluster)
+
+clust_dat <-partydrivers %>% select(-state, -pvi_party) %>% scale %>% as.data.frame
+
+pam_dat<-partydrivers%>%select(-state,-pvi_party)
+sil_width<-vector()
+for(i in 2:10){  
+  pam_fit <- pam(pam_dat, k = i)  
+  sil_width[i] <- pam_fit$silinfo$avg.width  
+}
+ggplot()+geom_line(aes(x=1:10,y=sil_width))+scale_x_continuous(name="k",breaks=1:10)
+pam1 <- clust_dat %>% scale %>% pam(k=3)
+
+pamclust <- clust_dat %>% mutate(cluster=as.factor(pam1$clustering))
+pamclust %>% ggplot(aes(insurance_premiums, losses, num_drivers, color=cluster )) + geom_point()
+library(plotly)
+pamclust %>%plot_ly(x= ~insurance_premiums, y = ~losses, z = ~num_drivers, color= ~cluster,
+type = "scatter3d", mode = "markers") %>%
+layout(autosize = F, width = 900, height = 400)
+library(GGally)
+ggpairs(pamclust, columns=1:8, aes(color=cluster))
+pamclust %>% group_by(cluster) %>% summarize_if(is.numeric, mean, na.rm=T)
+partydrivers %>% slice(pam1$id.med)
+pam1$silinfo$avg.width
+plot(pam1, which=2)
+
+
+
+```
+
+#In order to do PAM, I created my dataset called clust_dat, extracting columns from my original dataset, which had the 8 numeric variables I wanted to analyze. It was important to scale my data in case the variables were measured on different scales. I used silhouette width to get my number of clusters! I computed the silhouette width then took the average. I viewed the result with ggplot and chose the highest point on the graph, which was 2 clusters. I took my data from clust_dat and used the pam function. I attributed this to a new variable called pam1.  After calculating the number of clusters needed and visualizing them on ggplot, I created a new vector called pamclust by taking clust_dat, which has my numeric variables, then used mutate to add a new variable called cluster in my dataset. I created cluster with data from my dataset pam1, which has my clustering vector. After that, I put it into ggplot, coloring by cluster to visualize my final cluster solution! The medoids for cluster 1, 2, and 3 were 0.04, 0.02, and 0.22, respectively.  Looking at the clusters, they were not tightly spread from each other and in fact overlapped over the entire scatterplot. They hardly represented clustered at all. I viewed it in plotly which selected 3 of my variables then Ggally which showed all of the variables. Ggally did not show any instances of separated clusters. After I used PAM, I grouped by the cluster and summarized to figure out the means for each variable. I used the slice function to look at the states that are most representative of their cluster, which was Missouri, Georgia, and Vermont. I ran my average silhouette width based on my first pam that I ran to look at how good the solution was! I got 0.063 as the representative number. I created a plot of pam1 to visualize and see the averages of different variables and my overall average silhouette width, which was 0.06. Based on the width, the structure has validity. Overall, the structure s completely unusable and uninformative and our data is not valid. 

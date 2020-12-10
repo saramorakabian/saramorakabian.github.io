@@ -60,7 +60,7 @@
  
 <div class="blog-title">
           <h4>
-         January 1, 0001 
+         December 9, 2020 
             &nbsp;&nbsp;
             
           </h4>
@@ -81,12 +81,12 @@
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ──────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────── tidyverse 1.3.0 ──</code></pre>
 <pre><code>## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
 ## ✓ tibble  3.0.3     ✓ dplyr   1.0.1
 ## ✓ tidyr   1.1.1     ✓ stringr 1.4.0
 ## ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
-<pre><code>## ── Conflicts ─────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ────────────────────────────── tidyverse_conflicts() ──
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(dplyr)
@@ -676,43 +676,43 @@ samp_distn&lt;-replicate(5000, {
 ## Estimated SEs
 samp_distn%&gt;%t%&gt;%as.data.frame%&gt;%summarize_all(sd)</code></pre>
 <pre><code>##   (Intercept) PlatformDC PlatformDS PlatformGBA PlatformGC PlatformPC
-## 1    14.78248   56.88338   15.15584    14.99453   15.38484    38.4296
+## 1    14.67744   57.76782   14.96953    14.84331   15.22954   37.45638
 ##   PlatformPS PlatformPS2 PlatformPS3 PlatformPS4 PlatformPSP PlatformPSV
-## 1   17.77238    15.12129    24.31501    62.10518    15.13974    20.33949
+## 1    17.8519    15.12609    23.82104    63.88161    15.07604    20.12433
 ##   PlatformWii PlatformWiiU PlatformX360 PlatformXB PlatformXOne Critic_Score_c
-## 1    20.95395      36.7887     23.82199   15.01872     36.46362       1.597864
+## 1    20.95669     36.68295     24.03034   14.95978     36.05642       1.601633
 ##   PlatformDC:Critic_Score_c PlatformDS:Critic_Score_c
-## 1                  4.135531                  1.622216
+## 1                   4.01509                  1.620498
 ##   PlatformGBA:Critic_Score_c PlatformGC:Critic_Score_c
-## 1                   1.619885                  1.708388
+## 1                   1.622715                  1.700065
 ##   PlatformPC:Critic_Score_c PlatformPS:Critic_Score_c
-## 1                  5.444898                  1.778638
+## 1                  5.396207                  1.814357
 ##   PlatformPS2:Critic_Score_c PlatformPS3:Critic_Score_c
-## 1                   1.643292                    2.73797
+## 1                   1.658411                   2.739602
 ##   PlatformPS4:Critic_Score_c PlatformPSP:Critic_Score_c
-## 1                    8.14709                   1.645536
+## 1                   8.279544                   1.653522
 ##   PlatformPSV:Critic_Score_c PlatformWii:Critic_Score_c
-## 1                   2.840339                   1.957145
+## 1                   2.827928                   1.953156
 ##   PlatformWiiU:Critic_Score_c PlatformX360:Critic_Score_c
-## 1                    3.323889                    2.261649
+## 1                    3.307766                    2.280626
 ##   PlatformXB:Critic_Score_c PlatformXOne:Critic_Score_c
-## 1                  1.642003                     3.74362</code></pre>
+## 1                  1.644756                    3.744934</code></pre>
 <pre class="r"><code>samp_distn %&gt;% t %&gt;% as.data.frame %&gt;% pivot_longer(1:34) %&gt;% group_by(name) %&gt;%
  summarize(lower=quantile(value,.025), upper=quantile(value,.975))</code></pre>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 34 x 3
 ##    name                         lower  upper
 ##    &lt;chr&gt;                        &lt;dbl&gt;  &lt;dbl&gt;
-##  1 (Intercept)                  89.5  148.  
-##  2 Critic_Score_c                4.50  10.7 
-##  3 PlatformDC                 -278.   -62.3 
-##  4 PlatformDC:Critic_Score_c    -6.62   9.29
-##  5 PlatformDS                 -112.   -52.1 
-##  6 PlatformDS:Critic_Score_c    -9.14  -2.83
-##  7 PlatformGBA                -125.   -65.3 
-##  8 PlatformGBA:Critic_Score_c   -9.52  -3.22
-##  9 PlatformGC                 -114.   -54.1 
-## 10 PlatformGC:Critic_Score_c    -8.69  -2.07
+##  1 (Intercept)                  90.1  148.  
+##  2 Critic_Score_c                4.47  10.7 
+##  3 PlatformDC                 -272.   -55.7 
+##  4 PlatformDC:Critic_Score_c    -6.44   8.98
+##  5 PlatformDS                 -112.   -53.6 
+##  6 PlatformDS:Critic_Score_c    -9.10  -2.76
+##  7 PlatformGBA                -125.   -66.2 
+##  8 PlatformGBA:Critic_Score_c   -9.50  -3.24
+##  9 PlatformGC                 -114.   -54.6 
+## 10 PlatformGC:Critic_Score_c    -8.67  -2.11
 ## # … with 24 more rows</code></pre>
 <p><em>Comparaing to the previous observed values, the values for Platform DC and DS increased, while GBA, GC, PC, critic score, and PS4 &amp; critic score standard errors decreased. These values did not shift by more than a 1 unit increase, staying almost consistent. Using the 95% CI from our data, we can do hypothesis tests and ask if 0 is a plausible value. Highlighting some of the data, we can reject the hypothesis that the variable is not significant for variables such as critic score, platform DS, GBA, GC, PC, and the interaction between PS4 &amp; critic score interaction.</em></p>
 </div>
@@ -807,8 +807,8 @@ gamerr$Rating&lt;-NULL
 fit6 &lt;- glm(y~., data=gamerr, family=&quot;binomial&quot;)
 probs&lt;-predict(fit6,type=&quot;response&quot;) 
 class_diag(probs, gamerr$y)</code></pre>
-<pre><code>##      acc      sens      spec       ppv       auc
-## 1 0.7075 0.1213633 0.9595996 0.5637066 0.6911547</code></pre>
+<pre><code>##       acc      sens      spec       ppv       auc
+## 1 0.70725 0.1076159 0.9666905 0.5829596 0.6939793</code></pre>
 <pre class="r"><code>## k-fold CV
 set.seed(1234)
 k=10 #choose number of folds
@@ -834,28 +834,28 @@ for(i in 1:k){
   diags&lt;-rbind(diags,class_diag(probs,truth))
 }
 summarize_all(diags,mean) #average diagnostics across all k folds</code></pre>
-<pre><code>##      acc      sens      spec       ppv       auc
-## 1 0.7065 0.1206664 0.9591714 0.5639724 0.6888534</code></pre>
+<pre><code>##       acc      sens      spec      ppv       auc
+## 1 0.70525 0.1073706 0.9640004 0.562312 0.6929344</code></pre>
 <pre class="r"><code>#Lasso
 y&lt;-as.matrix(gamerr$y) #grab response
 x&lt;-model.matrix(y~.,data=gamerr)[,-1]
 head(x)</code></pre>
 <pre><code>##   Critic_Count Critic_Score User_Count User_Score
-## 1            7           44         16        6.5
-## 2           56           79        161        7.8
-## 3           34           61          7        5.3
-## 4           73           78         76        8.2
-## 5           24           69         12        5.0
-## 6           31           75        166        4.4</code></pre>
+## 1            6           58         31        7.6
+## 2           26           59         22        5.9
+## 3           11           68          9        8.0
+## 4           26           81         57        8.4
+## 5            8           84         11        8.7
+## 6           21           67         20        8.4</code></pre>
 <pre class="r"><code>cv&lt;-cv.glmnet(x,y,family=&quot;binomial&quot;)
 lasso&lt;-glmnet(x,y,family=&quot;binomial&quot;,lambda=cv$lambda.1se)
 coef(lasso)</code></pre>
 <pre><code>## 5 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
 ##                         s0
-## (Intercept)  -1.4188057792
-## Critic_Count -0.0270152547
-## Critic_Score  0.0198698826
-## User_Count   -0.0008312969
+## (Intercept)  -1.0368778573
+## Critic_Count -0.0235103180
+## Critic_Score  0.0129055047
+## User_Count   -0.0005540582
 ## User_Score    .</code></pre>
 <pre class="r"><code>#cross-validating lasso model
 set.seed(1234)
@@ -877,8 +877,8 @@ for(i in 1:k){
   diags&lt;-rbind(diags,class_diag(probs,truth))
 }
 summarize_all(diags,mean)</code></pre>
-<pre><code>##     acc       sens      spec       ppv       auc
-## 1 0.704 0.09930944 0.9644287 0.5616581 0.6877649</code></pre>
+<pre><code>##      acc      sens      spec      ppv       auc
+## 1 0.7045 0.0907702 0.9701351 0.570038 0.6905948</code></pre>
 <p><em>The model was calculated at 50% of the original length and with columns of interest in order to preserve Sara's computer processing power from setting on fire.For the in-sample fit model, we can look at the classification diagnostics and have more information about the model. Overall, the proportion of the model that correctly classified games as E-rated or non-E-rated was 0.708, based on the class diag accuracy output. Out of every game that is actually rated E, the proportion of our model that is flagging those games as rated E is 0.126, based on our sensitivity value in the class diag output. Out of every game that is actually a non-E-rated game, the proportion of our model that is flagging those games correctly is 0.961, based on our specificity value in the class diag output. Out of all of the values that our matrix is classifying as E-rated games, the proportion of those that are actually E-rated games are 0.590 based on the precision value in our class diag output. The AUC is 0.694, which tells us this model is poor, almost fair in predicting TPR and FPR! For the average out-of-sample classification diagnostics, the values differed slightly but did not have any improvment. While the values would represent a similar ROC curve and hold the same meaning in interpretation (see above paragraph), the new accuraciy, sensitivity, specificity, and precision of 0.704, 0.122, 0.958, and 0.574, respectively, still are not part of a good model. The decreased AUC of 0.693 also represents a poor, almost fair model, more random than the the in-sample. The LASSO model's finest lambda that meets the best requirements retains the variables Crtic_Count, User_Score, and Critic_Score. Comparing the model's out of sample AUC to that to that of the logistic regressions above, while the AUC decreased by 0.0002 to 0.692, it was not enough to say the cross-validating lasso model made the AUC much less predictable than it already was at, which is a poor, almost fair value, in which we will see most ROC curves let us know predictions will happen almost randomly.</em></p>
 </div>
 </div>
