@@ -74,10 +74,39 @@
 
 <div id="breaking-up-with-r" class="section level1">
 <h1>Breaking Up with R</h1>
-<p>I started learning the basics of Python in the last unit of my computational biology course and laughed because I could not comprehend the transiton after working with R for over a year. Little did my close-minded self know how cool Python could be (I still love you R, but I think we should consider an open relationship).</p>
+<p>I started learning the basics of Python in the last unit of my computational biology course and laughed because I could not comprehend the transiton after working with R for over a year. Little did my close-minded self know how cool Python and the available packages could be (I still love you R, but I think we should consider an open relationship).</p>
+<div id="r-and-python-two-apples-from-the-same-tree" class="section level2">
+<h2>R and Python; Two Apples From the Same Tree</h2>
+<p>Not only is Python is much more versatile and ranked number one amongst many programming languages, it lets me do everything I did in R! so I am glad I can translate the same information and learn even more useful tools in Python. Here are some descriptive statistics computed base R compared with the same statistics computed in Python. The package Numpy (sounds like a Seasame Street Elephant with short legs) is an open-source numerical Python library used for working witrh arrays.</p>
+<div id="finding-the-mean-median-of-earthquake-magnitude-and-depth-in-base-r" class="section level3">
+<h3>Finding the mean &amp; median of earthquake magnitude and depth in base R</h3>
+<pre class="r"><code>quakes &lt;- quakes
+
+mean(quakes$mag)</code></pre>
+<pre><code>## [1] 4.6204</code></pre>
+<pre class="r"><code>median(quakes$mag)</code></pre>
+<pre><code>## [1] 4.6</code></pre>
+<pre class="r"><code>mean(quakes$depth)</code></pre>
+<pre><code>## [1] 311.371</code></pre>
+<pre class="r"><code>median(quakes$depth)</code></pre>
+<pre><code>## [1] 247</code></pre>
 </div>
-<div id="here-is-some-base-python-ive-learned-to-use-it-lets-me-do-everything-i-did-in-r-but-often-with-shoter-more-concise-syntax.-lets-do-an-example-of-getting-the-same-result-of-r-vs-python." class="section level1">
-<h1>Here is some base python I've learned to use! It lets me do everything I did in R but often with shoter, more concise syntax. Lets do an example of getting the same result of R vs Python.</h1>
+<div id="finding-the-mean-median-of-earthquake-magnitude-and-depth-with-numpy" class="section level3">
+<h3>Finding the mean &amp; median of earthquake magnitude and depth with Numpy</h3>
+<pre class="python"><code>import pandas as pd
+quakes=pd.read_csv(&quot;https://vincentarelbundock.github.io/Rdatasets/csv/datasets/quakes.csv&quot;,index_col=0)
+
+import numpy as np
+np.mean(quakes.mag)</code></pre>
+<pre><code>## 4.6204000000000001</code></pre>
+<pre class="python"><code>np.median(quakes.mag)</code></pre>
+<pre><code>## 4.5999999999999996</code></pre>
+<pre class="python"><code>np.mean(quakes.depth)</code></pre>
+<pre><code>## 311.37099999999998</code></pre>
+<pre class="python"><code>np.median(quakes.depth)</code></pre>
+<pre><code>## 247.0</code></pre>
+</div>
+</div>
 </div>
 
             

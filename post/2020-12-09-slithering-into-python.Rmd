@@ -9,10 +9,34 @@ categories: []
 ---
 
 #Breaking Up with R
-I started learning the basics of Python in the last unit of my computational biology course and laughed because I could not comprehend the transiton after working with R for over a year. Little did my close-minded self know how cool Python could be (I still love you R, but I think we should consider an open relationship). 
+I started learning the basics of Python in the last unit of my computational biology course and laughed because I could not comprehend the transiton after working with R for over a year. Little did my close-minded self know how cool Python and the available packages could be (I still love you R, but I think we should consider an open relationship). 
 
-#Here is some base python I've learned to use! It lets me do everything I did in R but often with shoter, more concise syntax. Lets do an example of getting the same result of R vs Python.
+##R and Python; Two Apples From the Same Tree
+Not only is Python is much more versatile and ranked number one amongst many programming languages, it lets me do everything I did in R! so I am glad I can translate the same information and learn even more useful tools in Python.
+Here are some descriptive statistics computed base R compared with the same statistics computed in Python. The package Numpy (sounds like a Seasame Street Elephant with short legs) is an open-source numerical Python library used for working witrh arrays. 
 
+###Finding the mean & median of earthquake magnitude and depth in base R
+```{r}
+quakes <- quakes
+
+mean(quakes$mag)
+median(quakes$mag)
+mean(quakes$depth)
+median(quakes$depth)
+
+```
+
+###Finding the mean & median of earthquake magnitude and depth with Numpy
+```{python}
+import pandas as pd
+quakes=pd.read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/datasets/quakes.csv",index_col=0)
+
+import numpy as np
+np.mean(quakes.mag)
+np.median(quakes.mag)
+np.mean(quakes.depth)
+np.median(quakes.depth)
+```
 
 
 ```{r setup, include=FALSE}
